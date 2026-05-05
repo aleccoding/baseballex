@@ -19,8 +19,9 @@
     connect-src 'self';
     base-uri 'none';
     form-action 'self';
-    frame-ancestors 'none';
   " />
+  <!-- 防 clickjacking：若被 iframe 嵌入則自動跳出（外部 script 才符合 CSP script-src 'self'） -->
+  <script src="./js/frame-busting.js"></script>
   <meta property="og:title" content="中華職棒球場制霸等級 2026" />
   <meta property="og:description" content="紀錄你進過的中華職棒一軍球場，看看你的制霸等級！" />
   <meta property="og:url" content="https://aleccoding.github.io/baseballex/" />
