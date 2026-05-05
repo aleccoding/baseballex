@@ -153,10 +153,7 @@ body {
    ========================================================== */
 .map-section {
   position: relative;
-  background-color: var(--surface);
-  /* 棒球圖樣低調背景：每 110px tile 散落 2 顆迷你球 + 幾個點點 */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 110 110' width='110' height='110'%3E%3Cg opacity='0.32'%3E%3Ccircle cx='22' cy='28' r='8' fill='%23ffffff' stroke='%23a8a190' stroke-width='1.1'/%3E%3Cpath d='M 17.5 23 Q 14 28 17.5 33' fill='none' stroke='%23c1372f' stroke-width='0.9' stroke-linecap='round' opacity='0.85'/%3E%3Cpath d='M 26.5 23 Q 30 28 26.5 33' fill='none' stroke='%23c1372f' stroke-width='0.9' stroke-linecap='round' opacity='0.85'/%3E%3C/g%3E%3Cg opacity='0.28'%3E%3Ccircle cx='82' cy='82' r='7' fill='%23ffffff' stroke='%23a8a190' stroke-width='1'/%3E%3Cpath d='M 78 78 Q 75 82 78 86' fill='none' stroke='%23c1372f' stroke-width='0.8' stroke-linecap='round' opacity='0.85'/%3E%3Cpath d='M 86 78 Q 89 82 86 86' fill='none' stroke='%23c1372f' stroke-width='0.8' stroke-linecap='round' opacity='0.85'/%3E%3C/g%3E%3Ccircle cx='65' cy='15' r='1.4' fill='%23a8a190' fill-opacity='0.35'/%3E%3Ccircle cx='95' cy='40' r='1.2' fill='%23a8a190' fill-opacity='0.32'/%3E%3Ccircle cx='10' cy='65' r='1.2' fill='%23a8a190' fill-opacity='0.32'/%3E%3Ccircle cx='45' cy='95' r='1.4' fill='%23a8a190' fill-opacity='0.35'/%3E%3C/svg%3E");
-  background-repeat: repeat;
+  background: var(--surface);
   padding: var(--sp-5);
   border-radius: var(--radius-lg);
   border: 1px solid var(--line);
