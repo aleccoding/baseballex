@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>中華職棒球場制霸等級 2026 ⚾</title>
+  <meta name="description" content="紀錄你進過的中華職棒一軍球場，產生分享圖到社群媒體。" />
+  <meta name="theme-color" content="#1e3a5f" />
+  <meta property="og:title" content="中華職棒球場制霸等級 2026" />
+  <meta property="og:description" content="紀錄你進過的中華職棒一軍球場，看看你的制霸等級！" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50%25' y='50%25' font-size='80' text-anchor='middle' dy='.32em'%3E%E2%9A%BE%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <main class="app">
+
+    <!-- Header -->
+    <header class="hero">
+      <h1 class="hero__title">
+        <span class="hero__emoji">⚾</span>
+        中華職棒球場制霸等級
+      </h1>
+      <p class="hero__subtitle">2026 賽季・全 11 座一軍球場</p>
+      <div class="hero__score">
+        <span class="score__label">制霸等級</span>
+        <span class="score__num" id="score-num">0</span>
+        <span class="score__max">/ 55</span>
+      </div>
+      <div class="hero__stats">
+        進過 <span class="stats__num" id="stats-visited">0</span> / 11 座球場
+      </div>
+    </header>
+
+    <!-- 地圖區（步驟 3 填入） -->
+    <section class="map-section" aria-labelledby="map-title">
+      <h2 id="map-title" class="section-title">地圖</h2>
+      <div class="map-wrap" id="map-wrap">
+        <div class="map-placeholder">[ 台灣地圖將在步驟 3 加入 ]</div>
+      </div>
+    </section>
+
+    <!-- 等級圖例 -->
+    <section class="legend" aria-labelledby="legend-title">
+      <h2 id="legend-title" class="section-title">等級</h2>
+      <ul class="legend__list" id="legend-list"></ul>
+    </section>
+
+    <!-- 球場卡片網格 -->
+    <section class="stadiums" aria-labelledby="stadiums-title">
+      <h2 id="stadiums-title" class="section-title">球場</h2>
+      <ul class="card-grid" id="card-grid"></ul>
+    </section>
+
+    <!-- 工具列 -->
+    <footer class="toolbar">
+      <button type="button" class="btn btn--ghost" id="btn-reset">重置</button>
+      <button type="button" class="btn btn--ghost" id="btn-share" disabled>下載 PNG</button>
+      <button type="button" class="btn btn--primary" id="btn-social" disabled>分享到社群</button>
+    </footer>
+
+    <p class="credit">
+      資料：CPBL 2026 賽程 ・ 設計靈感：
+      <a href="https://zhung.com.tw/project/japanex/" target="_blank" rel="noopener">日本制縣等級</a>
+    </p>
+
+  </main>
+
+  <!-- 分享圖 view（隱藏在螢幕外，截圖用） -->
+  <div class="share-view" id="share-view" aria-hidden="true">
+    <div class="share-view__inner">
+      <header class="share-view__head">
+        <h2 class="share-view__title">⚾ 中華職棒球場制霸等級</h2>
+        <p class="share-view__subtitle">2026 賽季・全 11 座一軍球場</p>
+      </header>
+      <div class="share-view__score">
+        <span class="share-view__score-label">制霸等級</span>
+        <span class="share-view__score-num" id="share-score-num">0</span>
+        <span class="share-view__score-max">/ 55</span>
+      </div>
+      <div class="share-view__visited">
+        進過 <span id="share-visited">0</span> / 11 座球場
+      </div>
+      <div class="share-view__map" id="share-map"></div>
+      <div class="share-view__legend" id="share-legend"></div>
+      <footer class="share-view__foot">baseballex · 中華職棒球場制霸 2026</footer>
+    </div>
+  </div>
+
+  <!-- 分享到社群 modal -->
+  <dialog class="share-modal" id="share-modal" aria-label="分享到社群媒體">
+    <h3 class="share-modal__title">分享你的成績</h3>
+    <div class="share-modal__preview">
+      <img id="share-preview-img" alt="分享圖預覽" />
+    </div>
+    <p class="share-modal__text" id="share-text"></p>
+    <div class="share-modal__grid">
+      <button type="button" class="share-btn" id="share-native" hidden>📱 系統分享</button>
+      <button type="button" class="share-btn" id="share-copy">📋 複製圖片</button>
+      <button type="button" class="share-btn" id="share-copy-text">📝 複製文字</button>
+      <a class="share-btn share-btn--line" id="share-line" target="_blank" rel="noopener">LINE</a>
+      <a class="share-btn share-btn--x" id="share-x" target="_blank" rel="noopener">X</a>
+      <a class="share-btn share-btn--threads" id="share-threads" target="_blank" rel="noopener">Threads</a>
+      <a class="share-btn share-btn--fb" id="share-fb" target="_blank" rel="noopener">Facebook</a>
+    </div>
+    <p class="share-modal__hint">部分平台無法直接帶圖，請先「複製圖片」或「下載 PNG」再貼到貼文。</p>
+    <button type="button" class="btn btn--ghost share-modal__close" id="share-modal-close">關閉</button>
+  </dialog>
+
+  <!-- 等級選擇器 modal -->
+  <dialog class="level-picker" id="level-picker" aria-label="選擇等級">
+    <h3 class="level-picker__title" id="level-picker-title">選擇等級</h3>
+    <ul class="level-picker__list" id="level-picker-list"></ul>
+    <button type="button" class="btn btn--ghost level-picker__close" id="level-picker-close">取消</button>
+  </dialog>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
