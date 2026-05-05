@@ -182,6 +182,27 @@ function closeLevelPicker() {
   $('#level-picker').close();
 }
 
+// ---------- 等級分布側邊面板 ----------
+function renderLevelDistribution() {
+  const side = $('#map-side');
+  if (!side) return;
+  // 從高等級到低等級顯示
+  const items = [...LEVELS].reverse().map((lv) => {
+    const count = STADIUMS.filter((s) => (state.levels[s.id] ?? 0) === lv.id).length;
+    return `
+      <li class="map-side__item">
+        <span class="map-side__dot" style="background:${lv.color}"></span>
+        <span class="map-side__lv">L${lv.id}</span>
+        <span class="map-side__count" data-zero="${count === 0 ? 1 : 0}">${count} 座</span>
+      </li>
+    `;
+  }).join('');
+  side.innerHTML = `
+    <div class="map-side__title">等級分布</div>
+    <ul class="map-side__list">${items}</ul>
+  `;
+}
+
 // ---------- Stats ----------
 function renderStats() {
   const visited = STADIUMS.filter((s) => (state.levels[s.id] ?? 0) > 0).length;
@@ -192,6 +213,7 @@ function renderStats() {
   const noData = visited === 0;
   $('#btn-share').disabled = noData;
   $('#btn-social').disabled = noData;
+  renderLevelDistribution();
 }
 
 // ---------- Share image (html2canvas) ----------
