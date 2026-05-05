@@ -199,7 +199,8 @@ async function loadHtml2Canvas() {
   if (window.html2canvas) return window.html2canvas;
   await new Promise((resolve, reject) => {
     const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    // 本地化避免 CDN 風險（被劫持/竄改/離線無法用）
+    s.src = './js/vendor/html2canvas.min.js';
     s.onload = resolve;
     s.onerror = reject;
     document.head.appendChild(s);

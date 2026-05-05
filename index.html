@@ -6,6 +6,21 @@
   <title>中華職棒球場制霸等級 2026 ⚾</title>
   <meta name="description" content="紀錄你進過的中華職棒一軍球場，產生分享圖到社群媒體。" />
   <meta name="theme-color" content="#1e3a5f" />
+
+  <!-- Content Security Policy（深度防禦：限制資源只能從本站載入） -->
+  <!-- style-src 含 'unsafe-inline' 因為大量元素用 inline style 套色（球團色、等級色等） -->
+  <!-- img-src 含 data: 給 SVG favicon、blob: 給分享圖預覽 -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: blob:;
+    font-src 'self';
+    connect-src 'self';
+    base-uri 'none';
+    form-action 'self';
+    frame-ancestors 'none';
+  " />
   <meta property="og:title" content="中華職棒球場制霸等級 2026" />
   <meta property="og:description" content="紀錄你進過的中華職棒一軍球場，看看你的制霸等級！" />
   <meta property="og:url" content="https://aleccoding.github.io/baseballex/" />
