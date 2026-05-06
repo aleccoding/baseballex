@@ -462,6 +462,18 @@ function bindEvents() {
   $('#share-modal').addEventListener('click', (e) => {
     if (e.target === $('#share-modal')) $('#share-modal').close();
   });
+
+  // 關於 / 隱私說明 modals
+  $('#open-about').addEventListener('click', () => $('#about-modal').showModal());
+  $('#about-close').addEventListener('click', () => $('#about-modal').close());
+  $('#about-modal').addEventListener('click', (e) => {
+    if (e.target === $('#about-modal')) $('#about-modal').close();
+  });
+  $('#open-privacy').addEventListener('click', () => $('#privacy-modal').showModal());
+  $('#privacy-close').addEventListener('click', () => $('#privacy-modal').close());
+  $('#privacy-modal').addEventListener('click', (e) => {
+    if (e.target === $('#privacy-modal')) $('#privacy-modal').close();
+  });
 }
 
 // ---------- Init ----------

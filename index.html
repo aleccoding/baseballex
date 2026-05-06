@@ -92,8 +92,85 @@
       資料：CPBL 2026 賽程 ・ 設計靈感：
       <a href="https://zhung.com.tw/project/japanex/" target="_blank" rel="noopener">日本制縣等級</a>
     </p>
+    <nav class="footer-nav" aria-label="頁尾">
+      <button type="button" class="link-btn" id="open-about">關於</button>
+      <span class="footer-nav__sep">・</span>
+      <button type="button" class="link-btn" id="open-privacy">隱私說明</button>
+      <span class="footer-nav__sep">・</span>
+      <a class="link-btn" href="https://github.com/aleccoding/baseballex" target="_blank" rel="noopener">GitHub</a>
+    </nav>
 
   </main>
+
+  <!-- 關於 modal -->
+  <dialog class="info-modal" id="about-modal" aria-labelledby="about-title">
+    <h3 class="info-modal__title" id="about-title">關於這個工具</h3>
+    <div class="info-modal__body">
+      <p><strong>中華職棒球場制霸等級 2026 ⚾</strong></p>
+      <p>讓中職球迷紀錄自己進過哪些一軍球場的小工具，看完後可以產生分享圖。</p>
+
+      <h4>對象球場（11 座）</h4>
+      <p><strong>主場 7 座：</strong>樂天桃園、新莊、天母、洲際、亞太、澄清湖、大巨蛋</p>
+      <p><strong>移地賽 4 座：</strong>嘉義市立、斗六、臺東、花蓮德興</p>
+
+      <h4>等級設計（6 級）</h4>
+      <p>從「從未踏入」、「路過附近」、「只到球場外」、「進場過但沒看完」、「看完整場例行賽」、到「看過特別賽事（季後賽 / 總冠軍 / 明星賽 / 開幕戰 / 紀念活動）」</p>
+
+      <h4>資料來源</h4>
+      <ul>
+        <li>CPBL 官方 2026 賽程</li>
+        <li><a href="https://github.com/g0v/twgeojson" target="_blank" rel="noopener">g0v 開放資料</a>：台灣縣市界 GeoJSON</li>
+        <li>維基百科：球場資訊、容量、啟用年份</li>
+      </ul>
+
+      <h4>啟發</h4>
+      <ul>
+        <li><a href="https://zhung.com.tw/project/japanex/" target="_blank" rel="noopener">日本制縣等級</a>（zhung.com.tw）</li>
+        <li><a href="https://travel.tonypa.in/" target="_blank" rel="noopener">台灣制縣等級</a>（tonypa.in）</li>
+      </ul>
+
+      <h4>開源</h4>
+      <p>程式碼公開於 <a href="https://github.com/aleccoding/baseballex" target="_blank" rel="noopener">GitHub: aleccoding/baseballex</a>，歡迎發 issue 或 PR。</p>
+
+      <p class="info-modal__sign">製作：Alec ・ 2026</p>
+    </div>
+    <button type="button" class="btn btn--ghost info-modal__close" id="about-close">關閉</button>
+  </dialog>
+
+  <!-- 隱私說明 modal -->
+  <dialog class="info-modal" id="privacy-modal" aria-labelledby="privacy-title">
+    <h3 class="info-modal__title" id="privacy-title">隱私說明</h3>
+    <div class="info-modal__body">
+      <p class="info-modal__lead"><strong>簡短版：我不蒐集任何個人資料。</strong></p>
+
+      <h4>進度紀錄</h4>
+      <p>你選的等級只存在你自己的瀏覽器（透過 <code>localStorage</code> 機制），<strong>不會傳送到任何伺服器</strong>。關閉瀏覽器、清除快取、換裝置、使用無痕模式，紀錄都會消失。</p>
+
+      <h4>Cookie</h4>
+      <p>沒有任何 cookie。</p>
+
+      <h4>追蹤工具</h4>
+      <p>沒有 Google Analytics、沒有 Facebook Pixel、沒有任何流量分析或追蹤工具。</p>
+
+      <h4>第三方服務</h4>
+      <p>本站所有資源（HTML / CSS / JavaScript / 圖片）都從 GitHub Pages 自家伺服器載入，<strong>沒有依賴任何 CDN</strong>。</p>
+
+      <h4>伺服器日誌</h4>
+      <p>GitHub Pages 會記錄訪問來源 IP（屬 GitHub 隱私政策範圍）。網站擁有者看不到也無法存取這些資料。</p>
+
+      <h4>分享到社群</h4>
+      <p>當你點「分享到社群」按鈕，會開啟新分頁到該平台的分享頁面（LINE / X / Threads / Facebook）。本站不會將任何資料傳送到這些平台，所有分享動作都由你親自在該平台上確認。</p>
+
+      <h4>圖片產生</h4>
+      <p>分享圖（PNG）在你的瀏覽器內以 <code>html2canvas</code> 產生，<strong>不會上傳到任何地方</strong>。</p>
+
+      <h4>聯絡</h4>
+      <p>如有疑問可至 <a href="https://github.com/aleccoding/baseballex/issues" target="_blank" rel="noopener">GitHub Issues</a> 留言。</p>
+
+      <p class="info-modal__sign">最後更新：2026-05-06</p>
+    </div>
+    <button type="button" class="btn btn--ghost info-modal__close" id="privacy-close">關閉</button>
+  </dialog>
 
   <!-- 分享圖 view（隱藏在螢幕外，截圖用） -->
   <div class="share-view" id="share-view" aria-hidden="true">

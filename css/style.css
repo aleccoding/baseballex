@@ -556,6 +556,94 @@ body {
 .credit a { color: var(--accent); text-decoration: none; }
 .credit a:hover { text-decoration: underline; }
 
+/* 頁尾導覽（關於 / 隱私 / GitHub） */
+.footer-nav {
+  text-align: center;
+  margin-top: var(--sp-2);
+  font-size: var(--fs-xs);
+  color: var(--ink-mute);
+}
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  padding: 4px 8px;
+  text-decoration: none;
+  border-radius: 4px;
+}
+.link-btn:hover { text-decoration: underline; background: var(--surface); }
+.footer-nav__sep { color: var(--ink-mute); margin: 0 2px; }
+
+/* 資訊 modal（關於 / 隱私說明） */
+.info-modal {
+  border: none;
+  padding: 0;
+  border-radius: var(--radius-lg);
+  max-width: 560px;
+  width: calc(100% - 2rem);
+  max-height: 85vh;
+  overflow: auto;
+  box-shadow: var(--shadow-lg);
+  background: var(--surface);
+}
+.info-modal::backdrop { background: rgba(20, 25, 40, 0.55); backdrop-filter: blur(2px); }
+.info-modal__title {
+  margin: 0;
+  padding: var(--sp-5) var(--sp-5) var(--sp-3);
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  color: var(--ink);
+}
+.info-modal__body {
+  padding: 0 var(--sp-5);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+.info-modal__body p { margin: 0 0 var(--sp-2); }
+.info-modal__body h4 {
+  margin: var(--sp-4) 0 var(--sp-2);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--ink);
+}
+.info-modal__body ul {
+  margin: 0 0 var(--sp-2);
+  padding-left: 1.4em;
+}
+.info-modal__body li { margin-bottom: 4px; }
+.info-modal__body a { color: var(--accent); text-decoration: underline; }
+.info-modal__body a:hover { color: var(--accent-soft); }
+.info-modal__body code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 0.9em;
+  background: var(--bg);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--ink);
+}
+.info-modal__lead {
+  background: var(--bg);
+  padding: var(--sp-3);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--accent);
+}
+.info-modal__sign {
+  margin-top: var(--sp-4);
+  font-size: var(--fs-xs);
+  color: var(--ink-mute);
+  text-align: right;
+}
+.info-modal__close {
+  display: block;
+  margin: var(--sp-4) var(--sp-5) var(--sp-5);
+  width: calc(100% - 2 * var(--sp-5));
+  text-align: center;
+}
+
 /* ==========================================================
    Share View（分享圖；隱藏在 -10000px 給 html2canvas 截圖用）
    ========================================================== */
