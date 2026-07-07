@@ -265,18 +265,20 @@ function buildSvg(outline, levels, league) {
     return la - lb;
   });
 
+  // 用 aria-label 而非 <title>：互動版有自訂 hover tooltip，避免原生 tooltip 重複跳出
   const pinsHtml = sortedStadiums.map((s) => {
     const [x, y] = project(s.lat, s.lng);
     const lv = levels[s.id] ?? DEFAULT_LEVEL;
     return `
-      <g class="tw-map__pin" data-id="${s.id}" transform="translate(${x.toFixed(2)} ${y.toFixed(2)})">
+      <g class="tw-map__pin" data-id="${s.id}" data-level="${lv}" role="img"
+         aria-label="${loc(s, 'name')}（${loc(LEVELS[lv], 'label')}）"
+         transform="translate(${x.toFixed(2)} ${y.toFixed(2)})">
         <g class="tw-map__pin-scale">
           <circle class="tw-map__pin-ball" r="8" fill="${pinFillColor(lv)}"/>
           <path class="tw-map__pin-halo"     d="${SEAM_PATH_D} ${STITCH_PATH_D}"/>
           <path class="tw-map__pin-seam"     d="${SEAM_PATH_D}"/>
           <path class="tw-map__pin-stitches" d="${STITCH_PATH_D}"/>
         </g>
-        <title>${loc(s, 'name')}（${loc(LEVELS[lv], 'label')}）</title>
       </g>
     `;
   }).join('');
@@ -291,6 +293,73 @@ function buildSvg(outline, levels, league) {
       <g class="tw-map__labels">${labelsHtml}</g>
     </svg>
   `;
+}
+
+// ---------- Hover tooltip（桌機限定：有滑鼠的裝置才綁定） ----------
+const HOVER_CAPABLE = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+function tooltipHtml(stadium, levelId, league) {
+  const lv = LEVELS[levelId];
+  const locText = stadium.prefecture
+    ? `${loc(stadium, 'prefecture')}・${loc(stadium, 'city')}`
+    : `${loc(stadium, 'city')}・${loc(stadium, 'district')}`;
+  let teamsText;
+  if (stadium.isShared) {
+    teamsText = t('chipShared');
+  } else {
+    const ids = stadium.homeTeams.length > 0 ? stadium.homeTeams : (stadium.secondaryHomeTeams || []);
+    teamsText = ids.map((id) => loc(league.teams[id], 'name')).join('・');
+    if (stadium.homeTeams.length === 0) teamsText = `${t('chipSecondary')}：${teamsText}`;
+  }
+  return `
+    <div class="map-tooltip__head">
+      <span class="map-tooltip__name">${loc(stadium, 'name')}</span>
+      <span class="map-tooltip__level">
+        <span class="map-tooltip__dot" style="background:${lv.color}"></span>L${lv.id} ${loc(lv, 'short')}
+      </span>
+    </div>
+    <div class="map-tooltip__sub">
+      <span>${locText}</span>
+      <span class="map-tooltip__teams">${teamsText}</span>
+    </div>
+  `;
+}
+
+function setupTooltip(stack, league) {
+  if (!HOVER_CAPABLE.matches) return;
+  const tip = document.createElement('div');
+  tip.className = 'map-tooltip';
+  tip.hidden = true;
+  stack.appendChild(tip);
+
+  const hide = () => { tip.hidden = true; };
+
+  stack.addEventListener('pointerover', (e) => {
+    const pin = e.target.closest('.tw-map__pin[data-id]');
+    if (!pin) return;
+    const stadium = league.stadiums.find((s) => s.id === pin.dataset.id);
+    if (!stadium) return;
+    tip.innerHTML = tooltipHtml(stadium, Number(pin.dataset.level || DEFAULT_LEVEL), league);
+    tip.hidden = false;
+
+    // 定位：pin 正上方置中；太靠上緣改到下方；水平 clamp 在地圖範圍內
+    const pinRect = pin.getBoundingClientRect();
+    const stackRect = stack.getBoundingClientRect();
+    const cx = pinRect.left + pinRect.width / 2 - stackRect.left;
+    const x = Math.min(Math.max(cx - tip.offsetWidth / 2, 6), stackRect.width - tip.offsetWidth - 6);
+    tip.style.left = `${x.toFixed(0)}px`;
+    const above = pinRect.top - stackRect.top > tip.offsetHeight + 14;
+    const y = above
+      ? pinRect.top - stackRect.top - tip.offsetHeight - 10
+      : pinRect.bottom - stackRect.top + 10;
+    tip.style.top = `${y.toFixed(0)}px`;
+  });
+
+  stack.addEventListener('pointerout', (e) => {
+    if (e.target.closest('.tw-map__pin')) hide();
+  });
+  stack.addEventListener('pointerdown', hide);   // 開始拖拉 / 點擊時收掉
+  stack.addEventListener('wheel', hide, { passive: true });
 }
 
 // ---------- 渲染（互動版） ----------
@@ -330,6 +399,8 @@ export async function renderMap(container, league, levels = {}) {
     });
   });
 
+  setupTooltip(container.querySelector('.tw-map-stack'), league);
+
   return interactor;
 }
 
@@ -358,6 +429,6 @@ export function updateMapPin(container, league, stadiumId, level) {
   if (!node) return;
   const ball = node.querySelector('.tw-map__pin-ball');
   if (ball) ball.setAttribute('fill', pinFillColor(level));
-  const title = node.querySelector('title');
-  if (title && stadium) title.textContent = `${loc(stadium, 'name')}（${loc(LEVELS[level], 'label')}）`;
+  node.dataset.level = String(level);
+  if (stadium) node.setAttribute('aria-label', `${loc(stadium, 'name')}（${loc(LEVELS[level], 'label')}）`);
 }

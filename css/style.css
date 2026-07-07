@@ -267,6 +267,57 @@ body {
   /* 窄螢幕：藏掉側邊面板，留地圖完整空間（加大後的日本地圖會與面板重疊） */
   .map-side { display: none; }
 }
+/* 地圖 pin hover tooltip（桌機限定，map.js 以 hover media query 判斷後才建立） */
+.map-tooltip {
+  position: absolute;
+  z-index: 5;
+  max-width: 280px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  pointer-events: none;   /* 不擋 pin 的 hover / 點擊 */
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+}
+.map-tooltip__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.map-tooltip__name {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+.map-tooltip__level {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.map-tooltip__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+.map-tooltip__sub {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+.map-tooltip__teams { color: var(--ink-mute); }
+
 .map-placeholder {
   width: 100%; height: 100%;
   display: grid; place-items: center;
