@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>中華職棒球場制霸等級 2026 ⚾</title>
-  <meta name="description" content="紀錄你進過的中華職棒一軍球場，產生分享圖到社群媒體。" />
+  <title>棒球場制霸等級 2026 ⚾ 中職 / 日職</title>
+  <meta name="description" content="紀錄你進過的中華職棒、日本職棒一軍球場，產生分享圖到社群媒體。" />
   <meta name="theme-color" content="#1e3a5f" />
 
   <!-- Content Security Policy（深度防禦：限制資源只能從本站載入） -->
@@ -45,18 +45,22 @@
 
     <!-- Header -->
     <header class="hero">
-      <h1 class="hero__title">
+      <h1 class="hero__title" id="hero-title">
         <span class="hero__emoji">⚾</span>
-        中華職棒球場制霸等級
+        <span id="hero-title-text">中華職棒球場制霸等級</span>
       </h1>
-      <p class="hero__subtitle">2026 賽季・全 11 座一軍球場</p>
+      <p class="hero__subtitle" id="hero-subtitle">2026 賽季・全 11 座一軍球場</p>
+      <nav class="league-tabs" id="league-tabs" role="tablist" aria-label="聯盟切換">
+        <button type="button" class="league-tab" role="tab" data-league="cpbl" aria-selected="true">⚾ 中職</button>
+        <button type="button" class="league-tab" role="tab" data-league="npb" aria-selected="false">⚾ 日職</button>
+      </nav>
       <div class="hero__score">
         <span class="score__label">制霸等級</span>
         <span class="score__num" id="score-num">0</span>
-        <span class="score__max">/ 55</span>
+        <span class="score__max" id="score-max">/ 55</span>
       </div>
       <div class="hero__stats">
-        進過 <span class="stats__num" id="stats-visited">0</span> / 11 座球場
+        進過 <span class="stats__num" id="stats-visited">0</span> / <span id="stats-total">11</span> 座球場
       </div>
     </header>
 
@@ -106,20 +110,27 @@
   <dialog class="info-modal" id="about-modal" aria-labelledby="about-title">
     <h3 class="info-modal__title" id="about-title">關於這個工具</h3>
     <div class="info-modal__body">
-      <p><strong>中華職棒球場制霸等級 2026 ⚾</strong></p>
-      <p>讓中職球迷紀錄自己進過哪些一軍球場的小工具，看完後可以產生分享圖。</p>
+      <p><strong>棒球場制霸等級 2026 ⚾</strong></p>
+      <p>讓棒球迷紀錄自己進過哪些職棒一軍球場的小工具，目前支援中華職棒（CPBL）與日本職棒（NPB）。完成後可以產生分享圖到社群媒體。</p>
 
-      <h4>對象球場（11 座）</h4>
+      <h4>中華職棒（11 座）</h4>
       <p><strong>主場 7 座：</strong>樂天桃園、新莊、天母、洲際、亞太、澄清湖、大巨蛋</p>
       <p><strong>移地賽 4 座：</strong>嘉義市立、斗六、臺東、花蓮德興</p>
 
+      <h4>日本職棒（20 座）</h4>
+      <p><strong>主場 12 座：</strong>東京巨蛋、明治神宮、橫濱、Vantelin、Bellna、樂天生命、ZOZO、PayPay、京瓷、甲子園、廣島、Escon Field</p>
+      <p><strong>第二主場 / 移地賽 8 座：</strong>神戶、大宮、北九州、倉敷、長野、岐阜、藤崎台、坊っちゃん</p>
+
       <h4>等級設計（6 級）</h4>
       <p>從「從未踏入」、「路過附近」、「只到球場外」、「進場過但沒看完」、「看完整場例行賽」、到「看過特別賽事（季後賽 / 總冠軍 / 明星賽 / 開幕戰 / 紀念活動）」</p>
+      <p>中職與日職的進度<strong>各自獨立紀錄</strong>，切換頁籤不會互相影響。</p>
 
       <h4>資料來源</h4>
       <ul>
         <li>CPBL 官方 2026 賽程</li>
+        <li>NPB 官方賽程（セ・パ 兩聯盟 12 球團）</li>
         <li><a href="https://github.com/g0v/twgeojson" target="_blank" rel="noopener">g0v 開放資料</a>：台灣縣市界 GeoJSON</li>
+        <li><a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>：日本都道府縣界（不含沖繩）</li>
         <li>維基百科：球場資訊、容量、啟用年份</li>
       </ul>
 
@@ -176,16 +187,16 @@
   <div class="share-view" id="share-view" aria-hidden="true">
     <div class="share-view__inner">
       <header class="share-view__head">
-        <h2 class="share-view__title">⚾ 中華職棒球場制霸等級</h2>
-        <p class="share-view__subtitle">2026 賽季・全 11 座一軍球場</p>
+        <h2 class="share-view__title" id="share-title">⚾ 中華職棒球場制霸等級</h2>
+        <p class="share-view__subtitle" id="share-subtitle">2026 賽季・全 11 座一軍球場</p>
       </header>
       <div class="share-view__score">
         <span class="share-view__score-label">制霸等級</span>
         <span class="share-view__score-num" id="share-score-num">0</span>
-        <span class="share-view__score-max">/ 55</span>
+        <span class="share-view__score-max" id="share-score-max">/ 55</span>
       </div>
       <div class="share-view__visited">
-        進過 <span id="share-visited">0</span> / 11 座球場
+        進過 <span id="share-visited">0</span> / <span id="share-visited-total">11</span> 座球場
       </div>
       <div class="share-view__map" id="share-map"></div>
       <div class="share-view__legend" id="share-legend"></div>

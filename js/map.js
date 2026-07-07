@@ -1,66 +1,53 @@
-// 台灣地圖 SVG 渲染 + 互動（拖拉平移 + 按鈕/滾輪縮放）
+// 地圖 SVG 渲染 + 互動（拖拉平移 + 按鈕/滾輪縮放）
+// 由呼叫端傳入 league config（含 bbox、stadiums、teams、outlinePath），
+// 同一份程式可同時為中職、日職等聯盟渲染地圖。
 
-import { STADIUMS, LEVELS, DEFAULT_LEVEL, TEAMS } from '../data/stadiums.js';
+import { LEVELS, DEFAULT_LEVEL } from '../data/levels.js';
 
-const BBOX = {
-  minLng: 119.25, maxLng: 122.10,
-  minLat: 21.85,  maxLat: 25.35,
-};
-
-const VB = {
-  w: Math.round((BBOX.maxLng - BBOX.minLng) * 100),  // 285
-  h: Math.round((BBOX.maxLat - BBOX.minLat) * 100),  // 350
-};
-
-function project(lat, lng) {
-  const x = ((lng - BBOX.minLng) / (BBOX.maxLng - BBOX.minLng)) * VB.w;
-  const y = ((BBOX.maxLat - lat) / (BBOX.maxLat - BBOX.minLat)) * VB.h;
-  return [x, y];
+// ---------- 投影 / VB / outline 快取 ----------
+function bboxToVB(bbox) {
+  return {
+    w: Math.round((bbox.maxLng - bbox.minLng) * bbox.vbScale),
+    h: Math.round((bbox.maxLat - bbox.minLat) * bbox.vbScale),
+  };
 }
 
-function pointsAttr(latLngList) {
-  return latLngList
-    .map(([lat, lng]) => project(lat, lng).map((n) => n.toFixed(2)).join(','))
-    .join(' ');
+function makeProjector(bbox, vb) {
+  return (lat, lng) => {
+    const x = ((lng - bbox.minLng) / (bbox.maxLng - bbox.minLng)) * vb.w;
+    const y = ((bbox.maxLat - lat) / (bbox.maxLat - bbox.minLat)) * vb.h;
+    return [x, y];
+  };
 }
 
-// 把一個 ring（含 outer + holes）轉成 SVG path d 字串
-// 用 evenodd 規則時，外圈與洞圈方向不重要
-function ringToPath(ring) {
-  const parts = [ring.outer, ...ring.holes].map((coords) => {
-    return coords
-      .map(([lat, lng], i) => {
-        const [x, y] = project(lat, lng);
-        return `${i === 0 ? 'M' : 'L'}${x.toFixed(2)},${y.toFixed(2)}`;
-      })
-      .join(' ') + 'Z';
-  });
-  return parts.join(' ');
+// outline cache 以路徑為 key，不同聯盟分開快取
+const outlineCaches = {};
+async function loadOutline(path) {
+  if (outlineCaches[path]) return outlineCaches[path];
+  const res = await fetch(path);
+  if (!res.ok) throw new Error(`Failed to load outline: ${path}`);
+  outlineCaches[path] = await res.json();
+  return outlineCaches[path];
 }
 
-let outlineCache = null;
-async function loadOutline() {
-  if (outlineCache) return outlineCache;
-  const res = await fetch('./data/taiwan-outline.json');
-  if (!res.ok) throw new Error('Failed to load taiwan-outline.json');
-  outlineCache = await res.json();
-  return outlineCache;
+// 取得 outline 內的「區域」陣列。Taiwan 用 counties，Japan 用 prefectures
+function getRegions(outline) {
+  return outline.regions || outline.counties || outline.prefectures || [];
 }
 
-function pinStrokeColor(s) {
+// ---------- 棒球 pin 設計 ----------
+function pinStrokeColor(s, teams) {
   if (s.isShared) return '#1a1d24';
-  if (s.homeTeams.length > 0) return TEAMS[s.homeTeams[0]].color;
+  if (s.homeTeams.length > 0) return teams[s.homeTeams[0]].color;
   return '#5a5f6b';
 }
 
 // 球的填色：L0 用純白（像真實棒球），L1+ 用該等級色
-// 等級顯示（卡片 badge、legend、share view 等）仍使用 LEVELS[].color（灰）
 function pinFillColor(levelId) {
   return levelId === DEFAULT_LEVEL ? '#ffffff' : LEVELS[levelId].color;
 }
 
-// 棒球縫線：用程式沿著 seam 自動計算 stitches，保證對齊。
-// Seam 弧度 "()"：從上下端往兩側外凸（參考真實棒球俯視）
+// 棒球縫線：用程式沿著 seam 自動計算 stitches，保證對齊
 const SEAM_LEFT_CTRL  = [[-2.5, -6.5], [-5.5, -3.5], [-5.5, 3.5], [-2.5, 6.5]];
 const SEAM_RIGHT_CTRL = [[ 2.5, -6.5], [ 5.5, -3.5], [ 5.5, 3.5], [ 2.5, 6.5]];
 
@@ -68,7 +55,6 @@ function cubicPath(c) {
   return `M ${c[0][0]} ${c[0][1]} C ${c[1][0]} ${c[1][1]} ${c[2][0]} ${c[2][1]} ${c[3][0]} ${c[3][1]}`;
 }
 
-// 沿 cubic bezier 等距取點，產生垂直於切線的 stitch 短線
 function buildStitches([p0, p1, p2, p3], count, halfLen, outwardSign) {
   const segs = [];
   for (let i = 0; i < count; i++) {
@@ -99,9 +85,9 @@ const STITCH_PATH_D = [
 
 // ---------- 互動：拖拉 + 縮放 ----------
 class MapInteractor {
-  constructor(svg) {
+  constructor(svg, vb) {
     this.svg = svg;
-    this.initVB = { x: 0, y: 0, w: VB.w, h: VB.h };
+    this.initVB = { x: 0, y: 0, w: vb.w, h: vb.h };
     this.vb = { ...this.initVB };
     // 縮放範圍：1.0x（初始）~ 8.0x
     this.minVbW = this.initVB.w / 8;
@@ -114,16 +100,14 @@ class MapInteractor {
   apply() {
     const { x, y, w, h } = this.vb;
     this.svg.setAttribute('viewBox', `${x.toFixed(2)} ${y.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)}`);
-    // 標籤、pin 尺寸隨 zoom 縮放（在 viewBox 單位上反向），讓螢幕尺寸維持不變
     const r = w / this.initVB.w;
     this.svg.style.setProperty('--label-fs', (r * 5).toFixed(2));
     this.svg.style.setProperty('--pin-scale', r.toFixed(3));
-
     this.updateLabelVisibility();
   }
 
-  // 縣市標籤太靠近 pin 時自動淡出。zoom 越大、threshold 越小，淡出的越少。
-  // 帶 data-force 屬性的標籤永遠顯示（如嘉義市）。
+  // 標籤太靠近 pin 時自動淡出。zoom 越大、threshold 越小，淡出的越少
+  // 帶 data-force 屬性的標籤永遠顯示
   updateLabelVisibility() {
     if (!this.pinPositions) return;
     const labels = this.svg.querySelectorAll('.tw-map__label');
@@ -146,7 +130,6 @@ class MapInteractor {
   }
 
   clamp() {
-    // 限制 viewBox 寬度
     if (this.vb.w > this.maxVbW) {
       const r = this.maxVbW / this.vb.w;
       this.vb.w *= r;
@@ -157,23 +140,17 @@ class MapInteractor {
       this.vb.w *= r;
       this.vb.h *= r;
     }
-    // 限制位置：保證 viewBox 中心點在初始範圍內（允許邊緣半屏）
     const halfW = this.vb.w / 2;
     const halfH = this.vb.h / 2;
     const cx = this.vb.x + halfW;
     const cy = this.vb.y + halfH;
-    const minCx = 0;
-    const maxCx = this.initVB.w;
-    const minCy = 0;
-    const maxCy = this.initVB.h;
-    if (cx < minCx) this.vb.x = minCx - halfW;
-    if (cx > maxCx) this.vb.x = maxCx - halfW;
-    if (cy < minCy) this.vb.y = minCy - halfH;
-    if (cy > maxCy) this.vb.y = maxCy - halfH;
+    if (cx < 0) this.vb.x = -halfW;
+    if (cx > this.initVB.w) this.vb.x = this.initVB.w - halfW;
+    if (cy < 0) this.vb.y = -halfH;
+    if (cy > this.initVB.h) this.vb.y = this.initVB.h - halfH;
   }
 
   zoomBy(factor, cx, cy) {
-    // factor < 1 = zoom in, > 1 = zoom out
     const newW = this.vb.w * factor;
     if (newW < this.minVbW || newW > this.maxVbW) return;
     this.vb.x = cx - (cx - this.vb.x) * factor;
@@ -209,7 +186,6 @@ class MapInteractor {
 
   bind() {
     const onDown = (e) => {
-      // 點 pin 時不啟動拖拉
       if (e.target.closest('.tw-map__pin')) return;
       this.dragging = true;
       this.lastClient = { x: e.clientX, y: e.clientY };
@@ -246,30 +222,48 @@ class MapInteractor {
   }
 }
 
-// 共用：建構 SVG 字串
-function buildSvg(outline, levels) {
-  const countiesHtml = outline.counties
-    .map((c) => c.rings
-      .map((ring) => `<path class="tw-map__county" data-name="${c.name}" fill-rule="evenodd" d="${ringToPath(ring)}"/>`)
+// ---------- SVG 字串建構（共用） ----------
+function buildSvg(outline, levels, league) {
+  const { stadiums, teams, bbox } = league;
+  const vb = bboxToVB(bbox);
+  const project = makeProjector(bbox, vb);
+  const regions = getRegions(outline);
+
+  const ringToPath = (ring) => {
+    const parts = [ring.outer, ...ring.holes].map((coords) =>
+      coords
+        .map(([lat, lng], i) => {
+          const [x, y] = project(lat, lng);
+          return `${i === 0 ? 'M' : 'L'}${x.toFixed(2)},${y.toFixed(2)}`;
+        })
+        .join(' ') + 'Z'
+    );
+    return parts.join(' ');
+  };
+
+  const regionsHtml = regions
+    .map((r) => r.rings
+      .map((ring) => `<path class="tw-map__county" data-name="${r.name}" fill-rule="evenodd" d="${ringToPath(ring)}"/>`)
       .join('')
     )
     .join('');
 
-  const labelsHtml = outline.counties
-    .filter((c) => c.label)
-    .map((c) => {
-      const [x, y] = project(c.label[0], c.label[1]);
-      const force = c.forceShow ? ' data-force="1"' : '';
-      return `<text class="tw-map__label"${force} x="${x.toFixed(1)}" y="${y.toFixed(1)}">${c.displayName || c.name}</text>`;
+  const labelsHtml = regions
+    .filter((r) => r.label)
+    .map((r) => {
+      const [x, y] = project(r.label[0], r.label[1]);
+      const force = r.forceShow ? ' data-force="1"' : '';
+      return `<text class="tw-map__label"${force} x="${x.toFixed(1)}" y="${y.toFixed(1)}">${r.displayName || r.name}</text>`;
     })
     .join('');
 
-  // 按等級升序排序，讓高等級的 pin 後渲染（在 SVG 畫面上層），重疊時不會被低等級遮擋
-  const sortedStadiums = [...STADIUMS].sort((a, b) => {
+  // 按等級升序排序，讓高等級的 pin 後渲染（在 SVG 畫面上層）
+  const sortedStadiums = [...stadiums].sort((a, b) => {
     const la = levels[a.id] ?? DEFAULT_LEVEL;
     const lb = levels[b.id] ?? DEFAULT_LEVEL;
     return la - lb;
   });
+
   const pinsHtml = sortedStadiums.map((s) => {
     const [x, y] = project(s.lat, s.lng);
     const lv = levels[s.id] ?? DEFAULT_LEVEL;
@@ -287,11 +281,11 @@ function buildSvg(outline, levels) {
   }).join('');
 
   return `
-    <svg class="tw-map" viewBox="0 0 ${VB.w} ${VB.h}"
+    <svg class="tw-map" viewBox="0 0 ${vb.w} ${vb.h}"
          xmlns="http://www.w3.org/2000/svg"
-         role="img" aria-label="台灣地圖與中職球場分布">
+         role="img" aria-label="${league.name}球場分布地圖">
       <rect width="100%" height="100%" class="tw-map__sea"/>
-      <g class="tw-map__counties">${countiesHtml}</g>
+      <g class="tw-map__counties">${regionsHtml}</g>
       <g class="tw-map__pins">${pinsHtml}</g>
       <g class="tw-map__labels">${labelsHtml}</g>
     </svg>
@@ -299,9 +293,13 @@ function buildSvg(outline, levels) {
 }
 
 // ---------- 渲染（互動版） ----------
-export async function renderMap(container, levels = {}) {
-  const outline = await loadOutline();
-  const svgHtml = buildSvg(outline, levels);
+export async function renderMap(container, league, levels = {}) {
+  const outline = await loadOutline(league.outlinePath);
+  const svgHtml = buildSvg(outline, levels, league);
+
+  // 容器 aspect-ratio 隨聯盟調整（台灣 ~0.81、日本 ~1.17）
+  const vb = bboxToVB(league.bbox);
+  container.style.setProperty('--map-aspect', `${vb.w} / ${vb.h}`);
 
   container.innerHTML = `
     <div class="tw-map-stack">
@@ -314,11 +312,12 @@ export async function renderMap(container, levels = {}) {
     </div>
   `;
 
-  // 互動初始化
   const svg = container.querySelector('.tw-map');
-  const interactor = new MapInteractor(svg);
+  const interactor = new MapInteractor(svg, vb);
+
   // 提供 pin 位置（viewBox 單位）給標籤遮擋偵測
-  interactor.pinPositions = STADIUMS.map((s) => project(s.lat, s.lng));
+  const project = makeProjector(league.bbox, vb);
+  interactor.pinPositions = league.stadiums.map((s) => project(s.lat, s.lng));
   interactor.apply();
 
   container.querySelectorAll('.tw-ctrl').forEach((btn) => {
@@ -333,15 +332,13 @@ export async function renderMap(container, levels = {}) {
   return interactor;
 }
 
-// 靜態版：給分享圖使用，不含互動控制、不含縮放
-// 回傳 SVG 字串，呼叫端可塞進任何容器
-export async function renderMapStatic(levels = {}) {
-  const outline = await loadOutline();
-  return buildSvg(outline, levels);
+// 靜態版：給分享圖使用
+export async function renderMapStatic(league, levels = {}) {
+  const outline = await loadOutline(league.outlinePath);
+  return buildSvg(outline, levels, league);
 }
 
-// 重新排列 pin 在 DOM 中的順序：高等級在後（=畫面上層）
-// 等級變更時呼叫，避免低等級壓住高等級的視覺問題
+// 重排 pin 順序（高等級在後 = 上層）。等級變更時呼叫
 export function reorderMapPins(container, levels) {
   const group = container.querySelector('.tw-map__pins');
   if (!group) return;
@@ -354,8 +351,8 @@ export function reorderMapPins(container, levels) {
   pins.forEach((p) => group.appendChild(p));
 }
 
-export function updateMapPin(container, stadiumId, level) {
-  const stadium = STADIUMS.find((s) => s.id === stadiumId);
+export function updateMapPin(container, league, stadiumId, level) {
+  const stadium = league.stadiums.find((s) => s.id === stadiumId);
   const node = container.querySelector(`.tw-map__pin[data-id="${stadiumId}"]`);
   if (!node) return;
   const ball = node.querySelector('.tw-map__pin-ball');

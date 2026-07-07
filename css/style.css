@@ -102,10 +102,40 @@ body {
   color: var(--ink);
 }
 .hero__subtitle {
-  margin: 0 0 var(--sp-5);
+  margin: 0 0 var(--sp-3);
   color: var(--ink-soft);
   font-size: var(--fs-md);
 }
+
+/* 聯盟頁籤（中職 / 日職） */
+.league-tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  margin: 0 0 var(--sp-4);
+  box-shadow: var(--shadow-sm);
+}
+.league-tab {
+  padding: var(--sp-2) var(--sp-4);
+  min-height: 40px;
+  border-radius: 999px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ink-soft);
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.league-tab:hover { background: var(--bg); color: var(--ink); }
+.league-tab:active { transform: scale(0.96); }
+.league-tab.is-active {
+  background: var(--accent);
+  color: white;
+}
+.league-tab.is-active:hover { background: var(--accent-soft); color: white; }
+
 /* Score：球場制霸等級總分（主要視覺） */
 .hero__score {
   display: inline-flex;
@@ -159,7 +189,13 @@ body {
   border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
 }
-.map-wrap { aspect-ratio: 285 / 350; max-width: 460px; margin: 0 auto; position: relative; z-index: 1; }
+.map-wrap {
+  aspect-ratio: var(--map-aspect, 285 / 350);
+  max-width: var(--map-max-w, 460px);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
 
 /* 等級分布側邊面板（桌機填補地圖兩側留白） */
 .map-side {
