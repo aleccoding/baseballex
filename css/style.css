@@ -947,14 +947,17 @@ body {
 }
 .share-modal__preview img:not([src]),
 .share-modal__preview img[src=""] { display: none; }
+/* 分享文案＝敘述主軸：加大加粗、用主要墨色 */
 .share-modal__text {
   margin: 0 var(--sp-5) var(--sp-3);
-  padding: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
   background: var(--bg);
   border-radius: var(--radius-md);
-  font-size: var(--fs-sm);
-  color: var(--ink-soft);
-  line-height: 1.5;
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.6;
+  overflow-wrap: break-word;   /* 長網址換行 */
 }
 /* 群組標籤：分享到 / 或複製・下載 */
 .share-modal__group-label {
@@ -1108,8 +1111,9 @@ html { scroll-behavior: smooth; }
   .share-modal__title { padding: var(--sp-4) var(--sp-4) var(--sp-2); }
   .share-modal__preview { margin: 0 var(--sp-3) var(--sp-2); padding: var(--sp-2); }
   .share-modal__preview img { max-height: 220px; }
-  .share-modal__text { margin: 0 var(--sp-4) var(--sp-2); font-size: var(--fs-xs); }
-  .share-modal__grid { padding: 0 var(--sp-3); gap: var(--sp-2); }
+  .share-modal__text { margin: 0 var(--sp-4) var(--sp-2); font-size: var(--fs-sm); }
+  .share-modal__platforms,
+  .share-modal__utils { padding: 0 var(--sp-3); gap: var(--sp-2); }
   .share-modal__hint { margin: var(--sp-2) var(--sp-4) 0; }
   .share-modal__close { margin: var(--sp-3) var(--sp-4) var(--sp-4); width: calc(100% - 2 * var(--sp-4)); }
 
