@@ -18,6 +18,7 @@ export const CPBL_TEAMS = {
 export const CPBL_STADIUMS = [
   {
     id: 'taipei-dome',
+    region: 'north',
     name: '臺北大巨蛋',
     shortName: '大巨蛋',
     nameJa: '台北ドーム',
@@ -38,6 +39,7 @@ export const CPBL_STADIUMS = [
   },
   {
     id: 'taoyuan',
+    region: 'north',
     name: '樂天桃園棒球場',
     shortName: '桃園球場',
     nameJa: '楽天桃園球場',
@@ -58,6 +60,7 @@ export const CPBL_STADIUMS = [
   },
   {
     id: 'xinzhuang',
+    region: 'north',
     name: '新莊棒球場',
     shortName: '新莊',
     nameJa: '新荘野球場',
@@ -78,6 +81,7 @@ export const CPBL_STADIUMS = [
   },
   {
     id: 'tianmu',
+    region: 'north',
     name: '天母棒球場',
     shortName: '天母',
     nameJa: '天母野球場',
@@ -98,6 +102,7 @@ export const CPBL_STADIUMS = [
   },
   {
     id: 'taichung',
+    region: 'central',
     name: '臺中洲際棒球場',
     shortName: '洲際',
     nameJa: '台中洲際野球場',
@@ -118,6 +123,7 @@ export const CPBL_STADIUMS = [
   },
   {
     id: 'douliou',
+    region: 'central',
     name: '斗六棒球場',
     shortName: '斗六',
     nameJa: '斗六野球場',
@@ -138,6 +144,7 @@ export const CPBL_STADIUMS = [
   },
   {
     id: 'chiayi',
+    region: 'south',
     name: '嘉義市立棒球場',
     shortName: '嘉義',
     nameJa: '嘉義市立野球場',
@@ -158,6 +165,7 @@ export const CPBL_STADIUMS = [
   },
   {
     id: 'tainan-asia-pacific',
+    region: 'south',
     name: '亞太國際棒球場',
     shortName: '亞太',
     nameJa: 'アジア太平洋国際野球場',
@@ -178,6 +186,7 @@ export const CPBL_STADIUMS = [
   },
   {
     id: 'chengcing',
+    region: 'south',
     name: '高雄澄清湖棒球場',
     shortName: '澄清湖',
     nameJa: '高雄澄清湖野球場',
@@ -198,6 +207,7 @@ export const CPBL_STADIUMS = [
   },
   {
     id: 'taitung',
+    region: 'east',
     name: '臺東棒球場',
     shortName: '臺東',
     nameJa: '台東野球場',
@@ -218,6 +228,7 @@ export const CPBL_STADIUMS = [
   },
   {
     id: 'hualien',
+    region: 'east',
     name: '花蓮縣立德興棒球場',
     shortName: '花蓮德興',
     nameJa: '花蓮徳興野球場',
@@ -236,6 +247,14 @@ export const CPBL_STADIUMS = [
     note: '中央山脈為背景，景觀最佳球場',
     noteJa: '中央山脈を望む、絶景の球場',
   },
+];
+
+// 分享圖清單的地理分區（由北到南）
+export const CPBL_REGIONS = [
+  { id: 'north',   name: '北部', nameJa: '北部' },
+  { id: 'central', name: '中部', nameJa: '中部' },
+  { id: 'south',   name: '南部', nameJa: '南部' },
+  { id: 'east',    name: '東部', nameJa: '東部' },
 ];
 
 // 地圖視窗（含本島 + 澎湖 + 蘭嶼/綠島）

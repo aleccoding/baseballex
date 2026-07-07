@@ -25,6 +25,7 @@ export const NPB_STADIUMS = [
   // ===== 12 球團主場 =====
   {
     id: 'tokyo-dome',
+    region: 'kanto',
     name: '東京巨蛋',
     shortName: '東京巨蛋',
     nameJa: '東京ドーム',
@@ -46,6 +47,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'koshien',
+    region: 'kansai',
     name: '阪神甲子園球場',
     shortName: '甲子園',
     nameJa: '阪神甲子園球場',
@@ -67,6 +69,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'vantelin-dome',
+    region: 'chubu',
     name: 'Vantelin Dome 名古屋',
     shortName: 'Vantelin',
     nameJa: 'バンテリンドーム ナゴヤ',
@@ -88,6 +91,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'mazda-stadium',
+    region: 'chugoku',
     name: 'Mazda Zoom-Zoom 廣島',
     shortName: 'Mazda 廣島',
     nameJa: 'MAZDA Zoom-Zoom スタジアム広島',
@@ -109,6 +113,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'yokohama-stadium',
+    region: 'kanto',
     name: '橫濱球場',
     shortName: '橫濱',
     nameJa: '横浜スタジアム',
@@ -130,6 +135,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'jingu-stadium',
+    region: 'kanto',
     name: '明治神宮野球場',
     shortName: '神宮',
     nameJa: '明治神宮野球場',
@@ -151,6 +157,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'mizuho-paypay-dome',
+    region: 'kyushu',
     name: '瑞穗 PayPay 巨蛋福岡',
     shortName: 'PayPay 巨蛋',
     nameJa: 'みずほPayPayドーム福岡',
@@ -172,6 +179,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'escon-field',
+    region: 'hokkaido',
     name: 'Escon Field 北海道',
     shortName: 'Escon Field',
     nameJa: 'エスコンフィールドHOKKAIDO',
@@ -193,6 +201,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'zozo-marine',
+    region: 'kanto',
     name: 'ZOZO Marine 球場',
     shortName: 'ZOZO Marine',
     nameJa: 'ZOZOマリンスタジアム',
@@ -214,6 +223,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'kyocera-dome',
+    region: 'kansai',
     name: '京瓷巨蛋大阪',
     shortName: '京瓷巨蛋',
     nameJa: '京セラドーム大阪',
@@ -235,6 +245,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'rakuten-mobile-park',
+    region: 'tohoku',
     name: '樂天 Mobile Park 宮城',
     shortName: '樂天 Park',
     nameJa: '楽天モバイルパーク宮城',
@@ -256,6 +267,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'belluna-dome',
+    region: 'kanto',
     name: 'Belluna Dome',
     shortName: 'Belluna',
     nameJa: 'ベルーナドーム',
@@ -279,6 +291,7 @@ export const NPB_STADIUMS = [
   // ===== 8 座準主場 / 移地賽常用 =====
   {
     id: 'hotto-motto-kobe',
+    region: 'kansai',
     name: 'Hotto Motto Field 神戶',
     shortName: 'Hotto Motto 神戶',
     nameJa: 'ほっともっとフィールド神戸',
@@ -300,6 +313,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'omiya-park',
+    region: 'kanto',
     name: '埼玉縣營大宮公園球場',
     shortName: '大宮',
     nameJa: '埼玉県営大宮公園野球場',
@@ -321,6 +335,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'kitakyushu-civic',
+    region: 'kyushu',
     name: '北九州市民球場',
     shortName: '北九州',
     nameJa: '北九州市民球場',
@@ -342,6 +357,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'kurashiki-muscat',
+    region: 'chugoku',
     name: '倉敷 Muscat 球場',
     shortName: 'Muscat',
     nameJa: '倉敷マスカットスタジアム',
@@ -363,6 +379,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'nagano-olympic',
+    region: 'chubu',
     name: '長野 Olympic 體育場',
     shortName: '長野',
     nameJa: '長野オリンピックスタジアム',
@@ -384,6 +401,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'gifushin-nagaragawa',
+    region: 'chubu',
     name: 'Gifushin 長良川球場',
     shortName: '長良川',
     nameJa: 'ぎふしん長良川球場',
@@ -405,6 +423,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'fujisakidai',
+    region: 'kyushu',
     name: '藤崎台縣營球場',
     shortName: '藤崎台',
     nameJa: 'リブワーク藤崎台球場',
@@ -426,6 +445,7 @@ export const NPB_STADIUMS = [
   },
   {
     id: 'botchan-stadium',
+    region: 'shikoku',
     name: '坊っちゃん球場',
     shortName: '坊っちゃん',
     nameJa: '坊っちゃんスタジアム',
@@ -445,6 +465,18 @@ export const NPB_STADIUMS = [
     note: '養樂多燕子準主場，名稱取自夏目漱石小說《少爺》',
     noteJa: 'ヤクルトの準本拠地、名前は夏目漱石『坊っちゃん』から',
   },
+];
+
+// 分享圖清單的地理分區（日本八地方區分，由北到南）
+export const NPB_REGIONS = [
+  { id: 'hokkaido', name: '北海道', nameJa: '北海道' },
+  { id: 'tohoku',   name: '東北',   nameJa: '東北' },
+  { id: 'kanto',    name: '關東',   nameJa: '関東' },
+  { id: 'chubu',    name: '中部',   nameJa: '中部' },
+  { id: 'kansai',   name: '關西',   nameJa: '関西' },
+  { id: 'chugoku',  name: '中國',   nameJa: '中国' },
+  { id: 'shikoku',  name: '四國',   nameJa: '四国' },
+  { id: 'kyushu',   name: '九州',   nameJa: '九州' },
 ];
 
 // 地圖視窗（涵蓋本州、北海道、九州、四國，無沖繩；含種子屋久等南西諸島會被過濾）

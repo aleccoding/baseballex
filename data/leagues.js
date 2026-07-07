@@ -2,10 +2,10 @@
 // app.js / map.js 透過 league key 切換要渲染的資料
 
 import {
-  CPBL_TEAMS, CPBL_STADIUMS, CPBL_BBOX, CPBL_OUTLINE_PATH,
+  CPBL_TEAMS, CPBL_STADIUMS, CPBL_BBOX, CPBL_OUTLINE_PATH, CPBL_REGIONS,
 } from './cpbl.js';
 import {
-  NPB_TEAMS, NPB_STADIUMS, NPB_BBOX, NPB_OUTLINE_PATH,
+  NPB_TEAMS, NPB_STADIUMS, NPB_BBOX, NPB_OUTLINE_PATH, NPB_REGIONS,
 } from './npb.js';
 
 export const LEAGUES = {
@@ -22,6 +22,7 @@ export const LEAGUES = {
     seasonJa: '2026年シーズン',
     teams: CPBL_TEAMS,
     stadiums: CPBL_STADIUMS,
+    regions: CPBL_REGIONS,
     bbox: CPBL_BBOX,
     outlinePath: CPBL_OUTLINE_PATH,
     storageKey: 'baseballex_levels_v1',  // 沿用既有 key，相容舊紀錄
@@ -39,6 +40,7 @@ export const LEAGUES = {
     seasonJa: '2026年シーズン',
     teams: NPB_TEAMS,
     stadiums: NPB_STADIUMS,
+    regions: NPB_REGIONS,
     bbox: NPB_BBOX,
     outlinePath: NPB_OUTLINE_PATH,
     storageKey: 'baseballex_levels_v1_npb',

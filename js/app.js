@@ -313,10 +313,16 @@ async function loadHtml2Canvas() {
 // 圖片快取（同樣狀態不重複產生）
 let cachedBlob = null;
 let cachedKey = null;
+let previewObjectUrl = null;
 
 function invalidateShareCache() {
   cachedBlob = null;
   cachedKey = null;
+}
+
+// 分享圖上顯示的短網址（無協定）與文字訊息用的完整網址
+function siteDisplayUrl() {
+  return `${window.location.host}${window.location.pathname}`.replace(/\/$/, '');
 }
 
 function buildShareText() {
@@ -326,7 +332,48 @@ function buildShareText() {
     max: getMaxScore(),
     visited: getVisitedCount(),
     total: getStadiumCount(),
+    url: window.location.href,
   });
+}
+
+// 分享圖清單：依地理分區（由北到南）分組，塞進 4 欄
+// 只有色環點 + 球場名——看的人不需要懂等級規則，有顏色 = 去過
+function buildShareLegend(league, levels) {
+  const blocks = (league.regions || []).map((rg) => {
+    const items = league.stadiums.filter((s) => s.region === rg.id);
+    return items.length ? { rg, items, lines: items.length + 1 } : null;
+  }).filter(Boolean);
+
+  // 依序裝欄，每欄行數盡量平均（保持由北到南的閱讀順序）
+  const COLS = 4;
+  const totalLines = blocks.reduce((sum, b) => sum + b.lines, 0);
+  const target = Math.ceil(totalLines / COLS);
+  const cols = [[]];
+  let curLines = 0;
+  for (const b of blocks) {
+    if (curLines > 0 && curLines + b.lines > target + 1 && cols.length < COLS) {
+      cols.push([]);
+      curLines = 0;
+    }
+    cols[cols.length - 1].push(b);
+    curLines += b.lines;
+  }
+
+  return cols.map((col) => `
+    <div class="share-view__legend-col">
+      ${col.map((b) => `
+        <div class="share-view__legend-region">
+          <div class="share-view__legend-region-name">${loc(b.rg, 'name')}</div>
+          ${b.items.map((s) => {
+            const lv = LEVELS[levels[s.id] ?? 0];
+            return `
+              <div class="share-view__legend-item" data-lv="${lv.id}">
+                <span class="share-view__legend-dot" style="--swatch:${lv.color}"></span>
+                <span>${loc(s, 'shortName')}</span>
+              </div>`;
+          }).join('')}
+        </div>`).join('')}
+    </div>`).join('');
 }
 
 async function generateShareBlob() {
@@ -341,9 +388,10 @@ async function generateShareBlob() {
   $('#share-subtitle').textContent = t('heroSubtitle', { season: loc(league, 'season'), n: league.stadiums.length });
   $('#share-score-num').textContent = String(getStateScore());
   $('#share-score-max').textContent = `/ ${getMaxScore()}`;
-  $('#share-visited-line').innerHTML = t('statsLine', {
+  $('#share-visited-line').innerHTML = t('shareStatsLine', {
     v: `<span id="share-visited">${getVisitedCount()}</span>`,
     t: `<span id="share-visited-total">${getStadiumCount()}</span>`,
+    r: getStadiumCount() - getVisitedCount(),
   });
 
   const mapHtml = await renderMapStatic(league, levels);
@@ -354,15 +402,8 @@ async function generateShareBlob() {
     shareSvg.style.setProperty('--label-fs', '5');
   }
 
-  $('#share-legend').innerHTML = league.stadiums.map((s) => {
-    const lv = LEVELS[levels[s.id] ?? 0];
-    return `
-      <div class="share-view__legend-item">
-        <span class="share-view__legend-dot" style="--swatch:${lv.color}"></span>
-        <span>${loc(s, 'shortName')} L${lv.id}</span>
-      </div>
-    `;
-  }).join('');
+  $('#share-legend').innerHTML = buildShareLegend(league, levels);
+  $('#share-foot').textContent = t('shareCta', { url: siteDisplayUrl() });
 
   await new Promise((r) => requestAnimationFrame(r));
 
@@ -420,10 +461,12 @@ async function openSocialShare() {
     const blob = await generateShareBlob();
     const text = buildShareText();
 
-    const previewUrl = URL.createObjectURL(blob);
-    const img = $('#share-preview-img');
-    img.onload = () => URL.revokeObjectURL(previewUrl);
-    img.src = previewUrl;
+    // 保留 object URL 直到下次產生才 revoke：
+    // 立刻 revoke 的話，下次 html2canvas 複製文件時，複製體裡的 img
+    // 仍指向已失效的 blob URL，會噴 ERR_FILE_NOT_FOUND
+    if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
+    previewObjectUrl = URL.createObjectURL(blob);
+    $('#share-preview-img').src = previewObjectUrl;
 
     $('#share-text').textContent = text;
     setupSocialButtons(text, blob);
@@ -439,14 +482,15 @@ async function openSocialShare() {
 }
 
 function setupSocialButtons(text, blob) {
-  const url = window.location.href;
-  const t = encodeURIComponent(text);
-  const u = encodeURIComponent(url);
+  // 注意：不可命名為 t，會遮蔽 i18n 的 t()
+  const encText = encodeURIComponent(text);
+  const encUrl = encodeURIComponent(window.location.href);
 
-  $('#share-line').href    = `https://line.me/R/share?text=${t}`;
-  $('#share-x').href       = `https://twitter.com/intent/tweet?text=${t}&url=${u}`;
-  $('#share-threads').href = `https://www.threads.net/intent/post?text=${t}`;
-  $('#share-fb').href      = `https://www.facebook.com/sharer/sharer.php?u=${u}`;
+  // 文字訊息本身已含網址（buildShareText），X 不再另帶 url 參數避免重複
+  $('#share-line').href    = `https://line.me/R/share?text=${encText}`;
+  $('#share-x').href       = `https://twitter.com/intent/tweet?text=${encText}`;
+  $('#share-threads').href = `https://www.threads.net/intent/post?text=${encText}`;
+  $('#share-fb').href      = `https://www.facebook.com/sharer/sharer.php?u=${encUrl}`;
 
   const nativeBtn = $('#share-native');
   const file = new File([blob], `${state.activeLeague}-share.png`, { type: 'image/png' });

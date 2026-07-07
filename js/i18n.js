@@ -96,8 +96,9 @@ const UI = {
     shareCopied: '✅ 已複製',
     shareCopyFailed: '複製失敗，可能瀏覽器不允許',
     shareHint: '部分平台無法直接帶圖，請先「複製圖片」或「下載 PNG」再貼到貼文。',
-    shareText: '我在{title}拿到 {score} / {max} 分，點亮 {visited} / {total} 座一軍球場！⚾️',
-    shareFoot: 'baseballex · 球場制霸 2026',
+    shareText: '我在{title}拿到 {score} / {max} 分，點亮 {visited} / {total} 座一軍球場！⚾️ 你也來試試：{url}',
+    shareStatsLine: '點亮 {v} / {t} 座球場・還有 {r} 座待點亮',
+    shareCta: '你也來點亮你的球場地圖 ⚾️ {url}',
 
     close: '關閉',
     footerAbout: '關於',
@@ -152,8 +153,9 @@ const UI = {
     shareCopied: '✅ コピーしました',
     shareCopyFailed: 'コピーできませんでした（ブラウザの制限の可能性）',
     shareHint: '一部のプラットフォームは画像を直接添付できません。先に「画像をコピー」または「PNG保存」してから投稿に貼り付けてください。',
-    shareText: '{title}で {score} / {max} 点、{visited} / {total} 球場をアンロック！⚾️',
-    shareFoot: 'baseballex・球場制覇 2026',
+    shareText: '{title}で {score} / {max} 点、{visited} / {total} 球場をアンロック！⚾️ あなたも→ {url}',
+    shareStatsLine: '{v} / {t} 球場をアンロック・残り {r} 球場',
+    shareCta: 'あなたも球場マップを点けてみよう ⚾️ {url}',
 
     close: '閉じる',
     footerAbout: 'このツールについて',
