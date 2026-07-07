@@ -90,9 +90,29 @@ body {
    Hero
    ========================================================== */
 .hero {
+  position: relative;
   text-align: center;
   padding: var(--sp-6) 0 var(--sp-4);
 }
+
+/* 語言切換（zh ↔ ja） */
+.lang-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 6px 12px;
+  font-size: var(--fs-sm);
+  font-family: inherit;
+  color: var(--ink-soft);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.15s, color 0.15s;
+}
+.lang-toggle:hover { background: var(--bg); color: var(--ink); }
+.lang-toggle:active { transform: scale(0.96); }
 .hero__emoji { display: inline-block; transform: translateY(-2px); }
 .hero__title {
   font-size: var(--fs-2xl);

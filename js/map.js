@@ -3,6 +3,7 @@
 // 同一份程式可同時為中職、日職等聯盟渲染地圖。
 
 import { LEVELS, DEFAULT_LEVEL } from '../data/levels.js';
+import { t, loc } from './i18n.js';
 
 // ---------- 投影 / VB / outline 快取 ----------
 function bboxToVB(bbox) {
@@ -275,7 +276,7 @@ function buildSvg(outline, levels, league) {
           <path class="tw-map__pin-seam"     d="${SEAM_PATH_D}"/>
           <path class="tw-map__pin-stitches" d="${STITCH_PATH_D}"/>
         </g>
-        <title>${s.name}（${LEVELS[lv].label}）</title>
+        <title>${loc(s, 'name')}（${loc(LEVELS[lv], 'label')}）</title>
       </g>
     `;
   }).join('');
@@ -283,7 +284,7 @@ function buildSvg(outline, levels, league) {
   return `
     <svg class="tw-map" viewBox="0 0 ${vb.w} ${vb.h}"
          xmlns="http://www.w3.org/2000/svg"
-         role="img" aria-label="${league.name}球場分布地圖">
+         role="img" aria-label="${t('mapAriaLabel', { league: loc(league, 'name') })}">
       <rect width="100%" height="100%" class="tw-map__sea"/>
       <g class="tw-map__counties">${regionsHtml}</g>
       <g class="tw-map__pins">${pinsHtml}</g>
@@ -304,10 +305,10 @@ export async function renderMap(container, league, levels = {}) {
   container.innerHTML = `
     <div class="tw-map-stack">
       ${svgHtml}
-      <div class="tw-map__controls" role="group" aria-label="地圖縮放">
-        <button type="button" class="tw-ctrl" data-zoom="in"  aria-label="放大" title="放大">＋</button>
-        <button type="button" class="tw-ctrl" data-zoom="out" aria-label="縮小" title="縮小">−</button>
-        <button type="button" class="tw-ctrl" data-zoom="reset" aria-label="重置視角" title="重置視角">⊙</button>
+      <div class="tw-map__controls" role="group" aria-label="${t('zoomGroupLabel')}">
+        <button type="button" class="tw-ctrl" data-zoom="in"  aria-label="${t('zoomIn')}" title="${t('zoomIn')}">＋</button>
+        <button type="button" class="tw-ctrl" data-zoom="out" aria-label="${t('zoomOut')}" title="${t('zoomOut')}">−</button>
+        <button type="button" class="tw-ctrl" data-zoom="reset" aria-label="${t('zoomReset')}" title="${t('zoomReset')}">⊙</button>
       </div>
     </div>
   `;
@@ -358,5 +359,5 @@ export function updateMapPin(container, league, stadiumId, level) {
   const ball = node.querySelector('.tw-map__pin-ball');
   if (ball) ball.setAttribute('fill', pinFillColor(level));
   const title = node.querySelector('title');
-  if (title && stadium) title.textContent = `${stadium.name}（${LEVELS[level].label}）`;
+  if (title && stadium) title.textContent = `${loc(stadium, 'name')}（${loc(LEVELS[level], 'label')}）`;
 }

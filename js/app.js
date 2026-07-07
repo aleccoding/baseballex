@@ -1,6 +1,7 @@
 import { LEVELS, DEFAULT_LEVEL } from '../data/levels.js';
 import { LEAGUES, DEFAULT_LEAGUE } from '../data/leagues.js';
 import { renderMap, renderMapStatic, updateMapPin, reorderMapPins } from './map.js';
+import { t, loc, getLocale, setLocale } from './i18n.js';
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -60,12 +61,13 @@ function saveCurrentLeague() {
 
 // ---------- Card / Map data helpers ----------
 function teamChip(teamId, { small = false } = {}) {
-  const t = getTeams()[teamId];
-  if (!t) return '';
+  const team = getTeams()[teamId];
+  if (!team) return '';
+  const name = loc(team, 'name');
   if (small) {
-    return `<span class="team-chip team-chip--small" style="--chip-bg:${t.color}" title="${t.name}"></span>`;
+    return `<span class="team-chip team-chip--small" style="--chip-bg:${team.color}" title="${name}"></span>`;
   }
-  return `<span class="team-chip" style="--chip-bg:${t.color}; --chip-fg:${t.textColor}">${t.name}</span>`;
+  return `<span class="team-chip" style="--chip-bg:${team.color}; --chip-fg:${team.textColor}">${name}</span>`;
 }
 
 function cardClasses(s) {
@@ -83,8 +85,8 @@ function cardBandColor(s) {
 
 // 球場位置文字（中職用 city · district、日職用 prefecture · city）
 function locationText(s) {
-  if (s.prefecture) return `${s.prefecture} · ${s.city}`;
-  return `${s.city} · ${s.district}`;
+  if (s.prefecture) return `${loc(s, 'prefecture')} · ${loc(s, 'city')}`;
+  return `${loc(s, 'city')} · ${loc(s, 'district')}`;
 }
 
 // ---------- Legend ----------
@@ -92,7 +94,7 @@ function renderLegend() {
   $('#legend-list').innerHTML = LEVELS.map((lv) => `
     <li class="legend__item">
       <span class="legend__dot" style="--swatch: ${lv.color}"></span>
-      <span>L${lv.id} ${lv.label}</span>
+      <span>L${lv.id} ${loc(lv, 'label')}</span>
     </li>
   `).join('');
 }
@@ -106,13 +108,13 @@ function renderCard(s) {
 
   const homeTeamHtml = s.isShared
     ? `<span class="card__teams">
-         <span class="team-chip" style="--chip-bg:#fff5d1; --chip-fg:#1a1d24">六隊共用</span>
+         <span class="team-chip" style="--chip-bg:#fff5d1; --chip-fg:#1a1d24">${t('chipShared')}</span>
        </span>`
     : s.homeTeams.length > 0
-      ? `<span class="card__teams">${s.homeTeams.map((t) => teamChip(t)).join('')}</span>`
+      ? `<span class="card__teams">${s.homeTeams.map((id) => teamChip(id)).join('')}</span>`
       : `<span class="card__teams">
-           <span class="team-chip" style="--chip-bg:#eee; --chip-fg:#666">移地賽</span>
-           ${(s.secondaryHomeTeams || []).map((t) => teamChip(t, { small: true })).join('')}
+           <span class="team-chip" style="--chip-bg:#eee; --chip-fg:#666">${t('chipSecondary')}</span>
+           ${(s.secondaryHomeTeams || []).map((id) => teamChip(id, { small: true })).join('')}
          </span>`;
 
   return `
@@ -122,14 +124,14 @@ function renderCard(s) {
               data-id="${s.id}"
               ${band ? `style="--card-band-color:${band}"` : ''}>
         <div class="card__head">
-          <h3 class="card__title">${s.name}</h3>
+          <h3 class="card__title">${loc(s, 'name')}</h3>
           <div class="card__loc">${locationText(s)}</div>
         </div>
         ${homeTeamHtml}
-        <p class="card__note">${s.note}</p>
-        <div class="card__meta">${s.year} 啟用 · 容納 ${s.capacity.toLocaleString()}</div>
+        <p class="card__note">${loc(s, 'note')}</p>
+        <div class="card__meta">${t('cardMeta', { year: s.year, cap: s.capacity.toLocaleString() })}</div>
         <span class="card__level" style="background:${lv.color}; color:#1a1d24">
-          L${lv.id} ${lv.short}
+          L${lv.id} ${loc(lv, 'short')}
         </span>
       </button>
     </li>
@@ -169,7 +171,7 @@ function updateCard(stadiumId) {
   const badge = card.querySelector('.card__level');
   if (badge) {
     badge.style.background = lv.color;
-    badge.innerHTML = `L${lv.id} ${lv.short}`;
+    badge.innerHTML = `L${lv.id} ${loc(lv, 'short')}`;
   }
 }
 
@@ -178,14 +180,14 @@ function openLevelPicker(stadiumId) {
   const stadium = getStadiums().find((s) => s.id === stadiumId);
   if (!stadium) return;
   pickerStadiumId = stadiumId;
-  $('#level-picker-title').textContent = stadium.name;
+  $('#level-picker-title').textContent = loc(stadium, 'name');
 
   const current = getLevels()[stadiumId] ?? DEFAULT_LEVEL;
   $('#level-picker-list').innerHTML = LEVELS.map((lv) => `
     <li class="level-picker__item">
       <button type="button" data-lv="${lv.id}" ${lv.id === current ? 'aria-current="true"' : ''}>
         <span class="level-picker__swatch" style="background:${lv.color}"></span>
-        <span class="level-picker__text">L${lv.id} ${lv.label}</span>
+        <span class="level-picker__text">L${lv.id} ${loc(lv, 'label')}</span>
       </button>
     </li>
   `).join('');
@@ -214,12 +216,12 @@ function renderLevelDistribution() {
       <li class="map-side__item">
         <span class="map-side__dot" style="background:${lv.color}"></span>
         <span class="map-side__lv">L${lv.id}</span>
-        <span class="map-side__count" data-zero="${count === 0 ? 1 : 0}">${count} 座</span>
+        <span class="map-side__count" data-zero="${count === 0 ? 1 : 0}">${t('distCount', { n: count })}</span>
       </li>
     `;
   }).join('');
   side.innerHTML = `
-    <div class="map-side__title">等級分布</div>
+    <div class="map-side__title">${t('distTitle')}</div>
     <ul class="map-side__list">${items}</ul>
   `;
 }
@@ -245,8 +247,10 @@ function getStadiumCount() {
 function renderStats() {
   const visited = getVisitedCount();
   const score = getStateScore();
-  $('#stats-visited').textContent = String(visited);
-  $('#stats-total').textContent = String(getStadiumCount());
+  $('#hero-stats').innerHTML = t('statsLine', {
+    v: `<span class="stats__num" id="stats-visited">${visited}</span>`,
+    t: `<span id="stats-total">${getStadiumCount()}</span>`,
+  });
   $('#score-num').textContent = String(score);
   $('#score-max').textContent = `/ ${getMaxScore()}`;
   const noData = visited === 0;
@@ -255,19 +259,41 @@ function renderStats() {
   renderLevelDistribution();
 }
 
-// ---------- Hero（標題 / 副標題 隨聯盟更新） ----------
+// ---------- Hero（標題 / 副標題 隨聯盟 + 語系更新） ----------
 function renderHero() {
   const league = getLeague();
-  $('#hero-title-text').textContent = league.fullTitle;
-  $('#hero-subtitle').textContent = `${league.season}・全 ${league.stadiums.length} 座一軍球場`;
-  document.title = `${league.fullTitle} ${league.season} ⚾`;
+  const title = loc(league, 'fullTitle');
+  const season = loc(league, 'season');
+  $('#hero-title-text').textContent = title;
+  $('#hero-subtitle').textContent = t('heroSubtitle', { season, n: league.stadiums.length });
+  document.title = t('docTitle', { title, season });
 
-  // tab 狀態
+  // tab 狀態 + 文字（語系）
   document.querySelectorAll('.league-tab').forEach((btn) => {
     const isActive = btn.dataset.league === state.activeLeague;
     btn.classList.toggle('is-active', isActive);
     btn.setAttribute('aria-selected', String(isActive));
+    btn.textContent = `⚾ ${loc(LEAGUES[btn.dataset.league], 'shortName')}`;
   });
+}
+
+// ---------- 靜態文字（data-i18n / data-locale） ----------
+function applyStaticText() {
+  document.documentElement.lang = t('htmlLang');
+  const meta = document.querySelector('meta[name="description"]');
+  if (meta) meta.setAttribute('content', t('metaDescription'));
+
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  // 雙語內容區塊（About / 隱私 / credit）
+  document.querySelectorAll('[data-locale]').forEach((el) => {
+    el.hidden = el.dataset.locale !== getLocale();
+  });
+  // 語言切換鈕顯示「可切換到的語言」
+  $('#lang-toggle').textContent = `🌐 ${t('langToggleLabel')}`;
+  $('#league-tabs').setAttribute('aria-label', t('tabAriaLabel'));
+  $('#share-preview-img').setAttribute('alt', t('sharePreviewAlt'));
 }
 
 // ---------- Share image (html2canvas) ----------
@@ -293,28 +319,31 @@ function invalidateShareCache() {
 }
 
 function buildShareText() {
-  const league = getLeague();
-  const score = getStateScore();
-  const max = getMaxScore();
-  const visited = getVisitedCount();
-  const total = getStadiumCount();
-  return `我在${league.fullTitle}拿到 ${score} / ${max} 分，進過 ${visited} / ${total} 座一軍球場！⚾`;
+  return t('shareText', {
+    title: loc(getLeague(), 'fullTitle'),
+    score: getStateScore(),
+    max: getMaxScore(),
+    visited: getVisitedCount(),
+    total: getStadiumCount(),
+  });
 }
 
 async function generateShareBlob() {
   const league = getLeague();
   const levels = getLevels();
-  // cache key 含聯盟，切換後需重新產生
-  const key = state.activeLeague + ':' + JSON.stringify(levels);
+  // cache key 含聯盟 + 語系，切換後需重新產生
+  const key = getLocale() + ':' + state.activeLeague + ':' + JSON.stringify(levels);
   if (cachedKey === key && cachedBlob) return cachedBlob;
 
   // 同步當前狀態到 share view
-  $('#share-title').textContent = `⚾ ${league.fullTitle}`;
-  $('#share-subtitle').textContent = `${league.season}・全 ${league.stadiums.length} 座一軍球場`;
+  $('#share-title').textContent = `⚾ ${loc(league, 'fullTitle')}`;
+  $('#share-subtitle').textContent = t('heroSubtitle', { season: loc(league, 'season'), n: league.stadiums.length });
   $('#share-score-num').textContent = String(getStateScore());
   $('#share-score-max').textContent = `/ ${getMaxScore()}`;
-  $('#share-visited').textContent = String(getVisitedCount());
-  $('#share-visited-total').textContent = String(getStadiumCount());
+  $('#share-visited-line').innerHTML = t('statsLine', {
+    v: `<span id="share-visited">${getVisitedCount()}</span>`,
+    t: `<span id="share-visited-total">${getStadiumCount()}</span>`,
+  });
 
   const mapHtml = await renderMapStatic(league, levels);
   $('#share-map').innerHTML = mapHtml;
@@ -329,7 +358,7 @@ async function generateShareBlob() {
     return `
       <div class="share-view__legend-item">
         <span class="share-view__legend-dot" style="background:${lv.color}"></span>
-        <span>${s.shortName} L${lv.id}</span>
+        <span>${loc(s, 'shortName')} L${lv.id}</span>
       </div>
     `;
   }).join('');
@@ -359,7 +388,7 @@ async function downloadShareImage() {
   if (btn.disabled) return;
   const original = btn.textContent;
   btn.disabled = true;
-  btn.textContent = '產生中…';
+  btn.textContent = t('generating');
   try {
     const blob = await generateShareBlob();
     const url = URL.createObjectURL(blob);
@@ -372,7 +401,7 @@ async function downloadShareImage() {
     URL.revokeObjectURL(url);
   } catch (err) {
     console.error(err);
-    alert('產生失敗：' + (err?.message || err));
+    alert(t('genFailed') + (err?.message || err));
   } finally {
     btn.disabled = false;
     btn.textContent = original;
@@ -385,7 +414,7 @@ async function openSocialShare() {
   if (btn.disabled) return;
   const original = btn.textContent;
   btn.disabled = true;
-  btn.textContent = '產生中…';
+  btn.textContent = t('generating');
   try {
     const blob = await generateShareBlob();
     const text = buildShareText();
@@ -401,7 +430,7 @@ async function openSocialShare() {
     $('#share-modal').showModal();
   } catch (err) {
     console.error(err);
-    alert('產生失敗：' + (err?.message || err));
+    alert(t('genFailed') + (err?.message || err));
   } finally {
     btn.disabled = false;
     btn.textContent = original;
@@ -425,7 +454,7 @@ function setupSocialButtons(text, blob) {
     nativeBtn.onclick = async () => {
       try {
         await navigator.share({
-          title: getLeague().fullTitle,
+          title: loc(getLeague(), 'fullTitle'),
           text,
           files: [file],
         });
@@ -443,24 +472,24 @@ function setupSocialButtons(text, blob) {
     copyImgBtn.onclick = async () => {
       try {
         await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-        copyImgBtn.textContent = '✅ 已複製';
-        setTimeout(() => { copyImgBtn.textContent = '📋 複製圖片'; }, 1800);
+        copyImgBtn.textContent = t('shareCopied');
+        setTimeout(() => { copyImgBtn.textContent = t('shareCopyImg'); }, 1800);
       } catch (err) {
         console.error(err);
-        alert('複製失敗，可能瀏覽器不允許');
+        alert(t('shareCopyFailed'));
       }
     };
   } else {
     copyImgBtn.disabled = true;
-    copyImgBtn.textContent = '📋 複製圖片（不支援）';
+    copyImgBtn.textContent = t('shareCopyImgNA');
   }
 
   $('#share-copy-text').onclick = async () => {
     try {
       await navigator.clipboard.writeText(text);
       const b = $('#share-copy-text');
-      b.textContent = '✅ 已複製';
-      setTimeout(() => { b.textContent = '📝 複製文字'; }, 1800);
+      b.textContent = t('shareCopied');
+      setTimeout(() => { b.textContent = t('shareCopyText'); }, 1800);
     } catch (err) {
       console.error(err);
     }
@@ -471,7 +500,7 @@ function setupSocialButtons(text, blob) {
 function resetAll() {
   const levels = getLevels();
   if (Object.keys(levels).length === 0) return;
-  if (!confirm(`確定要重置 ${getLeague().shortName} 所有球場等級嗎？`)) return;
+  if (!confirm(t('resetConfirm', { league: loc(getLeague(), 'shortName') }))) return;
   state.byLeague[state.activeLeague].levels = {};
   const mapStack = document.querySelector('.tw-map-stack');
   getStadiums().forEach((s) => {
@@ -483,24 +512,40 @@ function resetAll() {
   invalidateShareCache();
 }
 
+// ---------- 重新渲染（聯盟或語系切換共用） ----------
+function renderMapAsync() {
+  renderMap($('#map-wrap'), getLeague(), getLevels())
+    .then(() => bindMapPinClicks())
+    .catch((err) => {
+      console.error('renderMap failed:', err);
+      $('#map-wrap').innerHTML = `<div class="map-placeholder">${t('mapLoadFailed')}</div>`;
+    });
+}
+
+function renderAll() {
+  renderHero();
+  renderLegend();
+  renderCards();
+  renderStats();
+  renderMapAsync();
+}
+
 // ---------- League switching ----------
 function switchLeague(leagueId) {
   if (!LEAGUES[leagueId]) return;
   if (state.activeLeague === leagueId) return;
   state.activeLeague = leagueId;
   invalidateShareCache();
+  renderAll();
+}
 
-  // 全部重新渲染
-  renderHero();
-  renderCards();
-  renderStats();
-  // 重新渲染地圖（async）
-  renderMap($('#map-wrap'), getLeague(), getLevels())
-    .then(() => bindMapPinClicks())
-    .catch((err) => {
-      console.error('renderMap failed:', err);
-      $('#map-wrap').innerHTML = '<div class="map-placeholder">地圖載入失敗</div>';
-    });
+// ---------- Locale switching ----------
+function switchLocale(l) {
+  if (l === getLocale()) return;
+  setLocale(l);
+  invalidateShareCache();
+  applyStaticText();
+  renderAll();
 }
 
 // 地圖 pin 點擊 → 開等級選擇器（每次 renderMap 後須重新綁，因為 SVG 被換掉了）
@@ -546,6 +591,11 @@ function bindEvents() {
     if (btn) switchLeague(btn.dataset.league);
   });
 
+  // 語言切換（zh ↔ ja）
+  $('#lang-toggle').addEventListener('click', () => {
+    switchLocale(getLocale() === 'ja' ? 'zh' : 'ja');
+  });
+
   // Share modal 關閉
   $('#share-modal-close').addEventListener('click', () => $('#share-modal').close());
   $('#share-modal').addEventListener('click', (e) => {
@@ -567,15 +617,6 @@ function bindEvents() {
 
 // ---------- Init ----------
 loadState();
-renderLegend();
-renderHero();
-renderCards();
-renderStats();
+applyStaticText();   // 依語系套用靜態文字（初次進站依 navigator.language 自動偵測）
 bindEvents();
-
-renderMap($('#map-wrap'), getLeague(), getLevels())
-  .then(() => bindMapPinClicks())
-  .catch((err) => {
-    console.error('renderMap failed:', err);
-    $('#map-wrap').innerHTML = '<div class="map-placeholder">地圖載入失敗</div>';
-  });
+renderAll();

@@ -45,6 +45,7 @@
 
     <!-- Header -->
     <header class="hero">
+      <button type="button" class="lang-toggle" id="lang-toggle" aria-label="Language">🌐 日本語</button>
       <h1 class="hero__title" id="hero-title">
         <span class="hero__emoji">⚾</span>
         <span id="hero-title-text">中華職棒球場制霸等級</span>
@@ -55,18 +56,18 @@
         <button type="button" class="league-tab" role="tab" data-league="npb" aria-selected="false">⚾ 日職</button>
       </nav>
       <div class="hero__score">
-        <span class="score__label">制霸等級</span>
+        <span class="score__label" data-i18n="scoreLabel">制霸等級</span>
         <span class="score__num" id="score-num">0</span>
         <span class="score__max" id="score-max">/ 55</span>
       </div>
-      <div class="hero__stats">
+      <div class="hero__stats" id="hero-stats">
         進過 <span class="stats__num" id="stats-visited">0</span> / <span id="stats-total">11</span> 座球場
       </div>
     </header>
 
     <!-- 地圖區 -->
     <section class="map-section" aria-labelledby="map-title">
-      <h2 id="map-title" class="section-title">地圖</h2>
+      <h2 id="map-title" class="section-title" data-i18n="mapTitle">地圖</h2>
       <div class="map-wrap" id="map-wrap">
         <div class="map-placeholder">[ 台灣地圖將在步驟 3 加入 ]</div>
       </div>
@@ -75,31 +76,35 @@
 
     <!-- 等級圖例 -->
     <section class="legend" aria-labelledby="legend-title">
-      <h2 id="legend-title" class="section-title">等級</h2>
+      <h2 id="legend-title" class="section-title" data-i18n="legendTitle">等級</h2>
       <ul class="legend__list" id="legend-list"></ul>
     </section>
 
     <!-- 球場卡片網格 -->
     <section class="stadiums" aria-labelledby="stadiums-title">
-      <h2 id="stadiums-title" class="section-title">球場</h2>
+      <h2 id="stadiums-title" class="section-title" data-i18n="stadiumsTitle">球場</h2>
       <ul class="card-grid" id="card-grid"></ul>
     </section>
 
     <!-- 工具列 -->
     <footer class="toolbar">
-      <button type="button" class="btn btn--ghost" id="btn-reset">重置</button>
-      <button type="button" class="btn btn--ghost" id="btn-share" disabled>下載 PNG</button>
-      <button type="button" class="btn btn--primary" id="btn-social" disabled>分享到社群</button>
+      <button type="button" class="btn btn--ghost" id="btn-reset" data-i18n="btnReset">重置</button>
+      <button type="button" class="btn btn--ghost" id="btn-share" data-i18n="btnDownload" disabled>下載 PNG</button>
+      <button type="button" class="btn btn--primary" id="btn-social" data-i18n="btnSocial" disabled>分享到社群</button>
     </footer>
 
-    <p class="credit">
-      資料：CPBL 2026 賽程 ・ 設計靈感：
+    <p class="credit" data-locale="zh">
+      資料：CPBL / NPB 2026 賽程 ・ 設計靈感：
       <a href="https://zhung.com.tw/project/japanex/" target="_blank" rel="noopener">日本制縣等級</a>
     </p>
+    <p class="credit" data-locale="ja" hidden>
+      データ：CPBL / NPB 2026年日程 ・ インスピレーション：
+      <a href="https://zhung.com.tw/project/japanex/" target="_blank" rel="noopener">制県レベル</a>
+    </p>
     <nav class="footer-nav" aria-label="頁尾">
-      <button type="button" class="link-btn" id="open-about">關於</button>
+      <button type="button" class="link-btn" id="open-about" data-i18n="footerAbout">關於</button>
       <span class="footer-nav__sep">・</span>
-      <button type="button" class="link-btn" id="open-privacy">隱私說明</button>
+      <button type="button" class="link-btn" id="open-privacy" data-i18n="footerPrivacy">隱私說明</button>
       <span class="footer-nav__sep">・</span>
       <a class="link-btn" href="https://github.com/aleccoding/baseballex" target="_blank" rel="noopener">GitHub</a>
     </nav>
@@ -108,8 +113,8 @@
 
   <!-- 關於 modal -->
   <dialog class="info-modal" id="about-modal" aria-labelledby="about-title">
-    <h3 class="info-modal__title" id="about-title">關於這個工具</h3>
-    <div class="info-modal__body">
+    <h3 class="info-modal__title" id="about-title" data-i18n="aboutTitle">關於這個工具</h3>
+    <div class="info-modal__body" data-locale="zh">
       <p><strong>棒球場制霸等級 2026 ⚾</strong></p>
       <p>讓棒球迷紀錄自己進過哪些職棒一軍球場的小工具，目前支援中華職棒（CPBL）與日本職棒（NPB）。完成後可以產生分享圖到社群媒體。</p>
 
@@ -145,13 +150,49 @@
 
       <p class="info-modal__sign">製作：Alec ・ 2026</p>
     </div>
-    <button type="button" class="btn btn--ghost info-modal__close" id="about-close">關閉</button>
+    <div class="info-modal__body" data-locale="ja" hidden>
+      <p><strong>野球場制覇レベル 2026 ⚾</strong></p>
+      <p>行ったことのあるプロ野球一軍球場を記録できるツールです。台湾プロ野球（CPBL）と日本プロ野球（NPB）に対応。記録が終わったらシェア画像を作ってSNSに投稿できます。</p>
+
+      <h4>台湾プロ野球（11球場）</h4>
+      <p><strong>本拠地 7：</strong>楽天桃園、新荘、天母、台中洲際、アジア太平洋、澄清湖、台北ドーム</p>
+      <p><strong>地方開催 4：</strong>嘉義市立、斗六、台東、花蓮徳興</p>
+
+      <h4>日本プロ野球（20球場）</h4>
+      <p><strong>本拠地 12：</strong>東京ドーム、神宮、横浜、バンテリン、ベルーナ、楽天モバイル、ZOZOマリン、PayPay、京セラ、甲子園、マツダ、エスコンフィールド</p>
+      <p><strong>準本拠地・地方開催 8：</strong>神戸、大宮、北九州、倉敷、長野、岐阜、藤崎台、坊っちゃん</p>
+
+      <h4>レベル設計（6段階）</h4>
+      <p>「行ったことがない」「近くを通った」「球場の外まで行った」「入場したが途中まで」「公式戦をフル観戦」「特別な試合を観戦（ポストシーズン／優勝決定戦／オールスター／開幕戦／記念試合）」</p>
+      <p>台湾と日本の記録は<strong>それぞれ独立</strong>して保存され、タブを切り替えても互いに影響しません。</p>
+
+      <h4>データソース</h4>
+      <ul>
+        <li>CPBL 公式 2026年日程</li>
+        <li>NPB 公式日程（セ・パ12球団）</li>
+        <li><a href="https://github.com/g0v/twgeojson" target="_blank" rel="noopener">g0v オープンデータ</a>：台湾県市境界 GeoJSON</li>
+        <li><a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>：日本都道府県境界（沖縄を除く）</li>
+        <li>Wikipedia：球場情報・収容人数・開場年</li>
+      </ul>
+
+      <h4>インスピレーション</h4>
+      <ul>
+        <li><a href="https://zhung.com.tw/project/japanex/" target="_blank" rel="noopener">制県レベル</a>（zhung.com.tw）</li>
+        <li><a href="https://travel.tonypa.in/" target="_blank" rel="noopener">台湾制県レベル</a>（tonypa.in）</li>
+      </ul>
+
+      <h4>オープンソース</h4>
+      <p>コードは <a href="https://github.com/aleccoding/baseballex" target="_blank" rel="noopener">GitHub: aleccoding/baseballex</a> で公開しています。Issue や PR は歓迎です。</p>
+
+      <p class="info-modal__sign">制作：Alec ・ 2026</p>
+    </div>
+    <button type="button" class="btn btn--ghost info-modal__close" id="about-close" data-i18n="close">關閉</button>
   </dialog>
 
   <!-- 隱私說明 modal -->
   <dialog class="info-modal" id="privacy-modal" aria-labelledby="privacy-title">
-    <h3 class="info-modal__title" id="privacy-title">隱私說明</h3>
-    <div class="info-modal__body">
+    <h3 class="info-modal__title" id="privacy-title" data-i18n="privacyTitle">隱私說明</h3>
+    <div class="info-modal__body" data-locale="zh">
       <p class="info-modal__lead"><strong>簡短版：我不蒐集任何個人資料。</strong></p>
 
       <h4>進度紀錄</h4>
@@ -180,7 +221,36 @@
 
       <p class="info-modal__sign">最後更新：2026-05-06</p>
     </div>
-    <button type="button" class="btn btn--ghost info-modal__close" id="privacy-close">關閉</button>
+    <div class="info-modal__body" data-locale="ja" hidden>
+      <p class="info-modal__lead"><strong>要約：個人情報は一切収集しません。</strong></p>
+
+      <h4>記録の保存</h4>
+      <p>選択したレベルはあなたのブラウザ内（<code>localStorage</code>）にのみ保存され、<strong>どのサーバーにも送信されません</strong>。キャッシュの削除、端末の変更、プライベートブラウズでは記録は残りません。</p>
+
+      <h4>Cookie</h4>
+      <p>Cookie は一切使用していません。</p>
+
+      <h4>トラッキング</h4>
+      <p>Google Analytics、Facebook Pixel などのアクセス解析・トラッキングツールは一切ありません。</p>
+
+      <h4>第三者サービス</h4>
+      <p>本サイトのすべてのリソース（HTML / CSS / JavaScript / 画像）は GitHub Pages から読み込まれ、<strong>CDN には依存していません</strong>。</p>
+
+      <h4>サーバーログ</h4>
+      <p>GitHub Pages はアクセス元 IP を記録します（GitHub のプライバシーポリシーの範囲）。サイト運営者はこのデータを閲覧・取得できません。</p>
+
+      <h4>SNSシェア</h4>
+      <p>「SNSでシェア」ボタンを押すと、各プラットフォーム（LINE / X / Threads / Facebook）のシェアページが新しいタブで開きます。本サイトからこれらのプラットフォームへデータを送信することはなく、投稿はすべてあなた自身が各プラットフォーム上で確認・実行します。</p>
+
+      <h4>画像生成</h4>
+      <p>シェア画像（PNG）は <code>html2canvas</code> でブラウザ内で生成され、<strong>どこにもアップロードされません</strong>。</p>
+
+      <h4>お問い合わせ</h4>
+      <p>ご質問は <a href="https://github.com/aleccoding/baseballex/issues" target="_blank" rel="noopener">GitHub Issues</a> までどうぞ。</p>
+
+      <p class="info-modal__sign">最終更新：2026-05-06</p>
+    </div>
+    <button type="button" class="btn btn--ghost info-modal__close" id="privacy-close" data-i18n="close">關閉</button>
   </dialog>
 
   <!-- 分享圖 view（隱藏在螢幕外，截圖用） -->
@@ -191,44 +261,44 @@
         <p class="share-view__subtitle" id="share-subtitle">2026 賽季・全 11 座一軍球場</p>
       </header>
       <div class="share-view__score">
-        <span class="share-view__score-label">制霸等級</span>
+        <span class="share-view__score-label" data-i18n="scoreLabel">制霸等級</span>
         <span class="share-view__score-num" id="share-score-num">0</span>
         <span class="share-view__score-max" id="share-score-max">/ 55</span>
       </div>
-      <div class="share-view__visited">
+      <div class="share-view__visited" id="share-visited-line">
         進過 <span id="share-visited">0</span> / <span id="share-visited-total">11</span> 座球場
       </div>
       <div class="share-view__map" id="share-map"></div>
       <div class="share-view__legend" id="share-legend"></div>
-      <footer class="share-view__foot">baseballex · 中華職棒球場制霸 2026</footer>
+      <footer class="share-view__foot" data-i18n="shareFoot">baseballex · 球場制霸 2026</footer>
     </div>
   </div>
 
   <!-- 分享到社群 modal -->
   <dialog class="share-modal" id="share-modal" aria-label="分享到社群媒體">
-    <h3 class="share-modal__title">分享你的成績</h3>
+    <h3 class="share-modal__title" data-i18n="shareModalTitle">分享你的成績</h3>
     <div class="share-modal__preview">
       <img id="share-preview-img" alt="分享圖預覽" />
     </div>
     <p class="share-modal__text" id="share-text"></p>
     <div class="share-modal__grid">
-      <button type="button" class="share-btn" id="share-native" hidden>📱 系統分享</button>
-      <button type="button" class="share-btn" id="share-copy">📋 複製圖片</button>
-      <button type="button" class="share-btn" id="share-copy-text">📝 複製文字</button>
+      <button type="button" class="share-btn" id="share-native" data-i18n="shareNative" hidden>📱 系統分享</button>
+      <button type="button" class="share-btn" id="share-copy" data-i18n="shareCopyImg">📋 複製圖片</button>
+      <button type="button" class="share-btn" id="share-copy-text" data-i18n="shareCopyText">📝 複製文字</button>
       <a class="share-btn share-btn--line" id="share-line" target="_blank" rel="noopener">LINE</a>
       <a class="share-btn share-btn--x" id="share-x" target="_blank" rel="noopener">X</a>
       <a class="share-btn share-btn--threads" id="share-threads" target="_blank" rel="noopener">Threads</a>
       <a class="share-btn share-btn--fb" id="share-fb" target="_blank" rel="noopener">Facebook</a>
     </div>
-    <p class="share-modal__hint">部分平台無法直接帶圖，請先「複製圖片」或「下載 PNG」再貼到貼文。</p>
-    <button type="button" class="btn btn--ghost share-modal__close" id="share-modal-close">關閉</button>
+    <p class="share-modal__hint" data-i18n="shareHint">部分平台無法直接帶圖，請先「複製圖片」或「下載 PNG」再貼到貼文。</p>
+    <button type="button" class="btn btn--ghost share-modal__close" id="share-modal-close" data-i18n="close">關閉</button>
   </dialog>
 
   <!-- 等級選擇器 modal -->
   <dialog class="level-picker" id="level-picker" aria-label="選擇等級">
-    <h3 class="level-picker__title" id="level-picker-title">選擇等級</h3>
+    <h3 class="level-picker__title" id="level-picker-title" data-i18n="pickerTitle">選擇等級</h3>
     <ul class="level-picker__list" id="level-picker-list"></ul>
-    <button type="button" class="btn btn--ghost level-picker__close" id="level-picker-close">取消</button>
+    <button type="button" class="btn btn--ghost level-picker__close" id="level-picker-close" data-i18n="pickerCancel">取消</button>
   </dialog>
 
   <script type="module" src="./js/app.js"></script>
