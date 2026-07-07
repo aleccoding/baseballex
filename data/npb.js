@@ -450,10 +450,12 @@ export const NPB_STADIUMS = [
 // 地圖視窗（涵蓋本州、北海道、九州、四國，無沖繩；含種子屋久等南西諸島會被過濾）
 // 範圍對齊 japan-outline.json 實際資料；略加 padding 避免邊緣裁切
 // vbScale 控制 SVG viewBox 單位密度，讓 pin 在不同聯盟間維持相近螢幕尺寸
+// 22.4 是對齊台灣地圖的換算：日本地圖螢幕寬 656px 時，
+// pin / 縣名的實際大小與台灣地圖（456px 寬、vb 285 單位）相同
 export const NPB_BBOX = {
   minLng: 128.40, maxLng: 146.70,
   minLat: 30.20,  maxLat: 45.80,
-  vbScale: 16,
+  vbScale: 22.4,
 };
 
 export const NPB_OUTLINE_PATH = './data/japan-outline.json';
