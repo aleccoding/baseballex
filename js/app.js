@@ -273,7 +273,8 @@ function renderHero() {
     const isActive = btn.dataset.league === state.activeLeague;
     btn.classList.toggle('is-active', isActive);
     btn.setAttribute('aria-selected', String(isActive));
-    btn.textContent = `⚾️ ${loc(LEAGUES[btn.dataset.league], 'shortName')}`;
+    const lg = LEAGUES[btn.dataset.league];
+    btn.textContent = `${lg.flag} ${loc(lg, 'shortName')}`;
   });
 }
 

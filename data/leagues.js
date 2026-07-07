@@ -11,6 +11,7 @@ import {
 export const LEAGUES = {
   cpbl: {
     id: 'cpbl',
+    flag: '🇹🇼',
     name: '中華職棒',
     nameJa: '台湾プロ野球',
     shortName: '中職',
@@ -27,6 +28,7 @@ export const LEAGUES = {
   },
   npb: {
     id: 'npb',
+    flag: '🇯🇵',
     name: '日本職棒',
     nameJa: '日本プロ野球',
     shortName: '日職',
