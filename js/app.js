@@ -464,8 +464,7 @@ async function generateShareBlob() {
   return blob;
 }
 
-async function downloadShareImage() {
-  const btn = $('#btn-share');
+async function downloadShareImage(btn = $('#btn-share')) {
   if (btn.disabled) return;
   const original = btn.textContent;
   btn.disabled = true;
@@ -666,8 +665,11 @@ function bindEvents() {
 
   // 工具列
   $('#btn-reset').addEventListener('click', resetAll);
-  $('#btn-share').addEventListener('click', downloadShareImage);
+  $('#btn-share').addEventListener('click', () => downloadShareImage($('#btn-share')));
   $('#btn-social').addEventListener('click', openSocialShare);
+
+  // 分享 modal 內的下載鈕（與工具列共用邏輯）
+  $('#share-download').addEventListener('click', () => downloadShareImage($('#share-download')));
 
   // 聯盟頁籤
   $('#league-tabs').addEventListener('click', (e) => {

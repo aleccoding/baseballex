@@ -4,6 +4,8 @@
 
 /* Reset & Base */
 *, *::before, *::after { box-sizing: border-box; }
+/* [hidden] 必須贏過任何 display 宣告（如 .share-btn 的 display:flex） */
+[hidden] { display: none !important; }
 html, body { margin: 0; padding: 0; }
 button { font: inherit; cursor: pointer; border: none; background: none; }
 ul { list-style: none; padding: 0; margin: 0; }
@@ -954,11 +956,25 @@ body {
   color: var(--ink-soft);
   line-height: 1.5;
 }
-.share-modal__grid {
+/* 群組標籤：分享到 / 或複製・下載 */
+.share-modal__group-label {
+  margin: var(--sp-4) var(--sp-5) var(--sp-2);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink-mute);
+}
+.share-modal__platforms,
+.share-modal__utils {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
   gap: var(--sp-2);
   padding: 0 var(--sp-4);
+}
+.share-modal__platforms { grid-template-columns: repeat(4, 1fr); }
+.share-modal__utils { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 420px) {
+  /* 窄螢幕平台鈕改 2×2，字不會擠 */
+  .share-modal__platforms { grid-template-columns: repeat(2, 1fr); }
 }
 .share-btn {
   display: flex;
@@ -987,7 +1003,7 @@ body {
 .share-btn--threads:hover { background: #2c2c2c; }
 .share-btn--fb:hover      { background: #1463cc; }
 .share-modal__hint {
-  margin: var(--sp-3) var(--sp-5) 0;
+  margin: var(--sp-2) var(--sp-5) 0;
   font-size: var(--fs-xs);
   color: var(--ink-mute);
   line-height: 1.5;

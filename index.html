@@ -281,16 +281,23 @@
       <img id="share-preview-img" alt="分享圖預覽" />
     </div>
     <p class="share-modal__text" id="share-text"></p>
-    <div class="share-modal__grid">
-      <button type="button" class="share-btn" id="share-native" data-i18n="shareNative" hidden>📱 系統分享</button>
-      <button type="button" class="share-btn" id="share-copy" data-i18n="shareCopyImg">📋 複製圖片</button>
-      <button type="button" class="share-btn" id="share-copy-text" data-i18n="shareCopyText">📝 複製文字</button>
+
+    <p class="share-modal__group-label" data-i18n="shareToLabel">分享到</p>
+    <div class="share-modal__platforms">
       <a class="share-btn share-btn--line" id="share-line" target="_blank" rel="noopener">LINE</a>
-      <a class="share-btn share-btn--x" id="share-x" target="_blank" rel="noopener">X</a>
       <a class="share-btn share-btn--threads" id="share-threads" target="_blank" rel="noopener">Threads</a>
+      <a class="share-btn share-btn--x" id="share-x" target="_blank" rel="noopener">X</a>
       <a class="share-btn share-btn--fb" id="share-fb" target="_blank" rel="noopener">Facebook</a>
     </div>
     <p class="share-modal__hint" data-i18n="shareHint">部分平台無法直接帶圖，請先「複製圖片」或「下載 PNG」再貼到貼文。</p>
+
+    <p class="share-modal__group-label" data-i18n="shareSelfLabel">或複製・下載</p>
+    <div class="share-modal__utils">
+      <button type="button" class="share-btn" id="share-native" data-i18n="shareNative" hidden>📱 系統分享</button>
+      <button type="button" class="share-btn" id="share-copy" data-i18n="shareCopyImg">📋 複製圖片</button>
+      <button type="button" class="share-btn" id="share-copy-text" data-i18n="shareCopyText">📝 複製文字</button>
+      <button type="button" class="share-btn" id="share-download" data-i18n="shareDownload">⬇️ 下載 PNG</button>
+    </div>
     <button type="button" class="btn btn--ghost share-modal__close" id="share-modal-close" data-i18n="close">關閉</button>
   </dialog>
 

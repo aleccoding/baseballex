@@ -89,6 +89,9 @@ const UI = {
 
     shareModalTitle: '分享你的成績',
     sharePreviewAlt: '分享圖預覽',
+    shareToLabel: '分享到',
+    shareSelfLabel: '或複製・下載',
+    shareDownload: '⬇️ 下載 PNG',
     shareNative: '📱 系統分享',
     shareCopyImg: '📋 複製圖片',
     shareCopyImgNA: '📋 複製圖片（不支援）',
@@ -146,6 +149,9 @@ const UI = {
 
     shareModalTitle: '成績をシェア',
     sharePreviewAlt: 'シェア画像プレビュー',
+    shareToLabel: 'シェア先',
+    shareSelfLabel: 'またはコピー・保存',
+    shareDownload: '⬇️ PNG保存',
     shareNative: '📱 端末でシェア',
     shareCopyImg: '📋 画像をコピー',
     shareCopyImgNA: '📋 画像をコピー（非対応）',
