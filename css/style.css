@@ -507,24 +507,43 @@ body {
   gap: var(--sp-4);
 }
 
-/* 地區分組標題（橫跨整列，與地圖 / 分享圖同一套分區） */
+/* 地區分組標題（橫跨整列，與地圖 / 分享圖同一套分區；點擊收折） */
 .card-grid__region {
   grid-column: 1 / -1;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
   margin-top: var(--sp-3);
-  padding-bottom: var(--sp-1);
   border-bottom: 1px solid var(--line);
 }
 .card-grid__region:first-child { margin-top: 0; }
+.card-grid__region-toggle {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: var(--sp-1) 0 var(--sp-1);
+  text-align: left;
+  border-radius: var(--radius-sm);
+  -webkit-tap-highlight-color: transparent;
+}
+.card-grid__region-toggle:hover .card-grid__region-name { color: var(--ink); }
+.card-grid__region-chevron {
+  font-size: var(--fs-xs);
+  color: var(--ink-mute);
+  transform: rotate(90deg);           /* 展開 = ▾ */
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+.card-grid__region-toggle[aria-expanded="false"] .card-grid__region-chevron {
+  transform: rotate(0deg);            /* 收折 = ▸ */
+}
 .card-grid__region-name {
   font-size: var(--fs-sm);
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--ink-soft);
+  transition: color 0.15s;
 }
 .card-grid__region-count {
+  margin-left: auto;
   font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--ink-soft);

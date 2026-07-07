@@ -9,8 +9,8 @@ const $ = (sel) => document.querySelector(sel);
 const state = {
   activeLeague: DEFAULT_LEAGUE,
   byLeague: {
-    cpbl: { levels: {} },
-    npb:  { levels: {} },
+    cpbl: { levels: {}, collapsed: new Set() },
+    npb:  { levels: {}, collapsed: new Set() },
   },
 };
 let pickerStadiumId = null;
@@ -44,6 +44,36 @@ function loadState() {
     }
   }
 }
+
+// 地區收折狀態（兩聯盟各自獨立，跨 session 記憶）
+const COLLAPSE_KEY = 'baseballex_collapsed_v1';
+
+function loadCollapsed() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(COLLAPSE_KEY) || '{}');
+    for (const lgKey of Object.keys(LEAGUES)) {
+      const validIds = new Set((LEAGUES[lgKey].regions || []).map((r) => r.id));
+      const stored = Array.isArray(parsed[lgKey]) ? parsed[lgKey] : [];
+      state.byLeague[lgKey].collapsed = new Set(stored.filter((id) => validIds.has(id)));
+    }
+  } catch (err) {
+    console.warn('collapsed state load failed:', err);
+  }
+}
+
+function saveCollapsed() {
+  try {
+    const out = {};
+    for (const lgKey of Object.keys(LEAGUES)) {
+      out[lgKey] = [...state.byLeague[lgKey].collapsed];
+    }
+    localStorage.setItem(COLLAPSE_KEY, JSON.stringify(out));
+  } catch (err) {
+    console.warn('collapsed state save failed:', err);
+  }
+}
+
+const getCollapsed = () => state.byLeague[state.activeLeague].collapsed;
 
 function saveCurrentLeague() {
   const league = getLeague();
@@ -118,7 +148,7 @@ function renderCard(s) {
          </span>`;
 
   return `
-    <li>
+    <li data-region-of="${s.region || ''}">
       <button type="button" class="${cardClasses(s)}"
               data-level="${level}"
               data-id="${s.id}"
@@ -152,17 +182,43 @@ function renderCards() {
     return;
   }
 
-  // 依地區分組（與地圖、分享圖同一套由北到南順序），標題帶點亮進度
+  // 依地區分組（與地圖、分享圖同一套由北到南順序），標題帶點亮進度、可收折
+  const collapsed = getCollapsed();
   $('#card-grid').innerHTML = groups.map(({ rg, items }) => {
     const lit = items.filter((s) => (levels[s.id] ?? 0) > 0).length;
+    const isCollapsed = collapsed.has(rg.id);
     return `
       <li class="card-grid__region" data-region="${rg.id}">
-        <span class="card-grid__region-name">${loc(rg, 'name')}</span>
-        <span class="card-grid__region-count" data-zero="${lit === 0 ? 1 : 0}">${lit} / ${items.length}</span>
+        <button type="button" class="card-grid__region-toggle" aria-expanded="${!isCollapsed}">
+          <span class="card-grid__region-chevron" aria-hidden="true">▸</span>
+          <span class="card-grid__region-name">${loc(rg, 'name')}</span>
+          <span class="card-grid__region-count" data-zero="${lit === 0 ? 1 : 0}">${lit} / ${items.length}</span>
+        </button>
       </li>
       ${items.map(renderCard).join('')}
     `;
   }).join('');
+  // 套用收折狀態（隱藏被收折地區的卡片）
+  collapsed.forEach((regionId) => applyRegionCollapse(regionId, true));
+}
+
+// 收折 / 展開一個地區（只動 DOM，不重繪整個列表）
+function applyRegionCollapse(regionId, isCollapsed) {
+  const grid = $('#card-grid');
+  grid.querySelectorAll(`li[data-region-of="${regionId}"]`).forEach((li) => {
+    li.hidden = isCollapsed;
+  });
+  const toggle = grid.querySelector(`.card-grid__region[data-region="${regionId}"] .card-grid__region-toggle`);
+  if (toggle) toggle.setAttribute('aria-expanded', String(!isCollapsed));
+}
+
+function toggleRegion(regionId) {
+  const collapsed = getCollapsed();
+  const willCollapse = !collapsed.has(regionId);
+  if (willCollapse) collapsed.add(regionId);
+  else collapsed.delete(regionId);
+  applyRegionCollapse(regionId, willCollapse);
+  saveCollapsed();
 }
 
 // 等級變更時同步更新各地區標題的點亮進度
@@ -643,8 +699,13 @@ function bindMapPinClicks() {
 
 // ---------- Wire-up ----------
 function bindEvents() {
-  // 卡片點擊 → 開等級選擇器
+  // 卡片點擊 → 開等級選擇器；地區標題點擊 → 收折/展開
   $('#card-grid').addEventListener('click', (e) => {
+    const toggle = e.target.closest('.card-grid__region-toggle');
+    if (toggle) {
+      toggleRegion(toggle.closest('.card-grid__region').dataset.region);
+      return;
+    }
     const card = e.target.closest('.card[data-id]');
     if (card) openLevelPicker(card.dataset.id);
   });
@@ -703,6 +764,7 @@ function bindEvents() {
 
 // ---------- Init ----------
 loadState();
+loadCollapsed();
 applyStaticText();   // 依語系套用靜態文字（初次進站依 navigator.language 自動偵測）
 bindEvents();
 renderAll();
