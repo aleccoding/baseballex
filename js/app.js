@@ -139,7 +139,45 @@ function renderCard(s) {
 }
 
 function renderCards() {
-  $('#card-grid').innerHTML = getStadiums().map(renderCard).join('');
+  const league = getLeague();
+  const levels = getLevels();
+  const groups = (league.regions || []).map((rg) => {
+    const items = league.stadiums.filter((s) => s.region === rg.id);
+    return items.length ? { rg, items } : null;
+  }).filter(Boolean);
+
+  // 沒有地區設定的聯盟 fallback 成平鋪
+  if (groups.length === 0) {
+    $('#card-grid').innerHTML = getStadiums().map(renderCard).join('');
+    return;
+  }
+
+  // 依地區分組（與地圖、分享圖同一套由北到南順序），標題帶點亮進度
+  $('#card-grid').innerHTML = groups.map(({ rg, items }) => {
+    const lit = items.filter((s) => (levels[s.id] ?? 0) > 0).length;
+    return `
+      <li class="card-grid__region" data-region="${rg.id}">
+        <span class="card-grid__region-name">${loc(rg, 'name')}</span>
+        <span class="card-grid__region-count" data-zero="${lit === 0 ? 1 : 0}">${lit} / ${items.length}</span>
+      </li>
+      ${items.map(renderCard).join('')}
+    `;
+  }).join('');
+}
+
+// 等級變更時同步更新各地區標題的點亮進度
+function updateRegionCounts() {
+  const league = getLeague();
+  const levels = getLevels();
+  document.querySelectorAll('.card-grid__region').forEach((el) => {
+    const items = league.stadiums.filter((s) => s.region === el.dataset.region);
+    const lit = items.filter((s) => (levels[s.id] ?? 0) > 0).length;
+    const count = el.querySelector('.card-grid__region-count');
+    if (count) {
+      count.textContent = `${lit} / ${items.length}`;
+      count.dataset.zero = lit === 0 ? '1' : '0';
+    }
+  });
 }
 
 // ---------- Apply level ----------
@@ -257,6 +295,7 @@ function renderStats() {
   $('#btn-share').disabled = noData;
   $('#btn-social').disabled = noData;
   renderLevelDistribution();
+  updateRegionCounts();
 }
 
 // ---------- Hero（標題 / 副標題 隨聯盟 + 語系更新） ----------

@@ -505,6 +505,31 @@ body {
   gap: var(--sp-4);
 }
 
+/* 地區分組標題（橫跨整列，與地圖 / 分享圖同一套分區） */
+.card-grid__region {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: var(--sp-3);
+  padding-bottom: var(--sp-1);
+  border-bottom: 1px solid var(--line);
+}
+.card-grid__region:first-child { margin-top: 0; }
+.card-grid__region-name {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+.card-grid__region-count {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ink-soft);
+  font-feature-settings: "tnum";
+}
+.card-grid__region-count[data-zero="1"] { color: var(--ink-mute); opacity: 0.6; }
+
 /* Card */
 .card {
   --card-band-color: var(--ink-mute);
