@@ -130,7 +130,7 @@ function renderCard(s) {
         ${homeTeamHtml}
         <p class="card__note">${loc(s, 'note')}</p>
         <div class="card__meta">${t('cardMeta', { year: s.year, cap: s.capacity.toLocaleString() })}</div>
-        <span class="card__level" style="background:${lv.color}; color:#1a1d24">
+        <span class="card__level" style="--swatch:${lv.color}">
           L${lv.id} ${loc(lv, 'short')}
         </span>
       </button>
@@ -170,7 +170,7 @@ function updateCard(stadiumId) {
   card.dataset.level = String(levelId);
   const badge = card.querySelector('.card__level');
   if (badge) {
-    badge.style.background = lv.color;
+    badge.style.setProperty('--swatch', lv.color);
     badge.innerHTML = `L${lv.id} ${loc(lv, 'short')}`;
   }
 }
@@ -186,7 +186,7 @@ function openLevelPicker(stadiumId) {
   $('#level-picker-list').innerHTML = LEVELS.map((lv) => `
     <li class="level-picker__item">
       <button type="button" data-lv="${lv.id}" ${lv.id === current ? 'aria-current="true"' : ''}>
-        <span class="level-picker__swatch" style="background:${lv.color}"></span>
+        <span class="level-picker__swatch" style="--swatch:${lv.color}"></span>
         <span class="level-picker__text">L${lv.id} ${loc(lv, 'label')}</span>
       </button>
     </li>
@@ -214,7 +214,7 @@ function renderLevelDistribution() {
     const count = stadiums.filter((s) => (levels[s.id] ?? 0) === lv.id).length;
     return `
       <li class="map-side__item">
-        <span class="map-side__dot" style="background:${lv.color}"></span>
+        <span class="map-side__dot" style="--swatch:${lv.color}"></span>
         <span class="map-side__lv">L${lv.id}</span>
         <span class="map-side__count" data-zero="${count === 0 ? 1 : 0}">${t('distCount', { n: count })}</span>
       </li>
@@ -357,7 +357,7 @@ async function generateShareBlob() {
     const lv = LEVELS[levels[s.id] ?? 0];
     return `
       <div class="share-view__legend-item">
-        <span class="share-view__legend-dot" style="background:${lv.color}"></span>
+        <span class="share-view__legend-dot" style="--swatch:${lv.color}"></span>
         <span>${loc(s, 'shortName')} L${lv.id}</span>
       </div>
     `;

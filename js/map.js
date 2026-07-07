@@ -37,15 +37,19 @@ function getRegions(outline) {
 }
 
 // ---------- 棒球 pin 設計 ----------
-function pinStrokeColor(s, teams) {
-  if (s.isShared) return '#1a1d24';
-  if (s.homeTeams.length > 0) return teams[s.homeTeams[0]].color;
-  return '#5a5f6b';
-}
+// G2 視覺：球永遠是白色棒球，等級用「色環 + 外圈光暈」表現
+// 色環走 CSS 變數（--pin-ring / --pin-ring-w），光暈是兩層半透明 SVG 圓
+// （html2canvas 畫不出 CSS glow，純 SVG 圓在分享圖也能完整渲染）
+const PIN_RING_L0 = '#1a1d24';
 
-// 球的填色：L0 用純白（像真實棒球），L1+ 用該等級色
-function pinFillColor(levelId) {
-  return levelId === DEFAULT_LEVEL ? '#ffffff' : LEVELS[levelId].color;
+function pinRingColor(levelId) {
+  return levelId === DEFAULT_LEVEL ? PIN_RING_L0 : LEVELS[levelId].color;
+}
+function pinRingWidth(levelId) {
+  return levelId === DEFAULT_LEVEL ? '1.6' : '2.4';
+}
+function pinGlowFill(levelId) {
+  return levelId === DEFAULT_LEVEL ? 'none' : LEVELS[levelId].color;
 }
 
 // 棒球縫線：用程式沿著 seam 自動計算 stitches，保證對齊
@@ -272,9 +276,12 @@ function buildSvg(outline, levels, league) {
     return `
       <g class="tw-map__pin" data-id="${s.id}" data-level="${lv}" role="img"
          aria-label="${loc(s, 'name')}（${loc(LEVELS[lv], 'label')}）"
+         style="--pin-ring:${pinRingColor(lv)}; --pin-ring-w:${pinRingWidth(lv)}"
          transform="translate(${x.toFixed(2)} ${y.toFixed(2)})">
         <g class="tw-map__pin-scale">
-          <circle class="tw-map__pin-ball" r="8" fill="${pinFillColor(lv)}"/>
+          <circle class="tw-map__pin-glow tw-map__pin-glow--outer" r="13" fill="${pinGlowFill(lv)}" opacity="0.14"/>
+          <circle class="tw-map__pin-glow tw-map__pin-glow--inner" r="11" fill="${pinGlowFill(lv)}" opacity="0.28"/>
+          <circle class="tw-map__pin-ball" r="8" fill="#ffffff"/>
           <path class="tw-map__pin-halo"     d="${SEAM_PATH_D} ${STITCH_PATH_D}"/>
           <path class="tw-map__pin-seam"     d="${SEAM_PATH_D}"/>
           <path class="tw-map__pin-stitches" d="${STITCH_PATH_D}"/>
@@ -315,7 +322,7 @@ function tooltipHtml(stadium, levelId, league) {
     <div class="map-tooltip__head">
       <span class="map-tooltip__name">${loc(stadium, 'name')}</span>
       <span class="map-tooltip__level">
-        <span class="map-tooltip__dot" style="background:${lv.color}"></span>L${lv.id} ${loc(lv, 'short')}
+        <span class="map-tooltip__dot" style="--swatch:${lv.color}"></span>L${lv.id} ${loc(lv, 'short')}
       </span>
     </div>
     <div class="map-tooltip__sub">
@@ -427,8 +434,9 @@ export function updateMapPin(container, league, stadiumId, level) {
   const stadium = league.stadiums.find((s) => s.id === stadiumId);
   const node = container.querySelector(`.tw-map__pin[data-id="${stadiumId}"]`);
   if (!node) return;
-  const ball = node.querySelector('.tw-map__pin-ball');
-  if (ball) ball.setAttribute('fill', pinFillColor(level));
+  node.style.setProperty('--pin-ring', pinRingColor(level));
+  node.style.setProperty('--pin-ring-w', pinRingWidth(level));
+  node.querySelectorAll('.tw-map__pin-glow').forEach((c) => c.setAttribute('fill', pinGlowFill(level)));
   node.dataset.level = String(level);
   if (stadium) node.setAttribute('aria-label', `${loc(stadium, 'name')}（${loc(LEVELS[level], 'label')}）`);
 }

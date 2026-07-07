@@ -22,12 +22,12 @@ a { color: inherit; }
   --accent-soft:  #2a4d7a;
 
   /* 等級色（與 data/stadiums.js LEVELS 對齊） */
-  --lv-0: #cbd5e1;
-  --lv-1: #60a5fa;
-  --lv-2: #15803d;
-  --lv-3: #facc15;
-  --lv-4: #f97316;
-  --lv-5: #dc2626;
+  --lv-0: #9aa1ad;
+  --lv-1: #4d9fe6;
+  --lv-2: #3f9d63;
+  --lv-3: #cf9a25;
+  --lv-4: #d0672e;
+  --lv-5: #b83a34;
 
   /* 字級 */
   --fs-xs: 0.75rem;
@@ -249,10 +249,13 @@ body {
   font-size: var(--fs-xs);
 }
 .map-side__dot {
-  width: 12px; height: 12px;
+  width: 13px; height: 13px;
   border-radius: 50%;
+  background: #fff;
+  border: 2.5px solid var(--swatch, var(--lv-0));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--swatch, var(--lv-0)) 22%, transparent);
+  box-sizing: border-box;
   flex-shrink: 0;
-  border: 1px solid rgba(0,0,0,0.1);
 }
 .map-side__lv { font-weight: 700; color: var(--ink); width: 22px; }
 .map-side__count {
@@ -302,10 +305,12 @@ body {
   white-space: nowrap;
 }
 .map-tooltip__dot {
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: #fff;
+  border: 2.5px solid var(--swatch, var(--lv-0));
+  box-sizing: border-box;
   flex-shrink: 0;
 }
 .map-tooltip__sub {
@@ -393,11 +398,16 @@ body {
   transition: transform 0.15s ease;
 }
 .tw-map__pin-ball {
-  stroke: #1a1d24;
-  stroke-width: 1.6;
-  transition: fill 0.25s ease;
+  stroke: var(--pin-ring, #1a1d24);
+  stroke-width: var(--pin-ring-w, 1.6);
+  transition: stroke 0.25s ease;
   filter: drop-shadow(0 0.5px 1px rgba(0,0,0,0.18));
   vector-effect: non-scaling-stroke;
+}
+/* 等級光暈：兩層半透明同心圓（純 SVG，分享圖可渲染） */
+.tw-map__pin-glow {
+  pointer-events: none;
+  transition: fill 0.25s ease;
 }
 /* Halo：白色描邊墊在 seam 與 stitches 底下，讓在彩色球底上仍清楚可辨 */
 /* L0 白球時 halo 不可見（白白），L1+ 彩色球時 halo 形成白色光暈 */
@@ -479,9 +489,11 @@ body {
 .legend__dot {
   width: 14px; height: 14px;
   border-radius: 50%;
-  background: var(--swatch, var(--lv-0));
+  background: #fff;
+  border: 2.5px solid var(--swatch, var(--lv-0));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--swatch, var(--lv-0)) 22%, transparent);
+  box-sizing: border-box;
   flex-shrink: 0;
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.6) inset;
 }
 
 /* ==========================================================
@@ -604,9 +616,10 @@ body {
   align-self: flex-start;
   font-size: var(--fs-xs);
   font-weight: 700;
-  padding: 4px 10px;
+  padding: 3px 10px;
   border-radius: 999px;
-  background: var(--lv-0);
+  background: #fff;
+  border: 2px solid var(--swatch, var(--lv-0));
   color: var(--ink);
   margin-top: var(--sp-2);
 }
@@ -614,7 +627,7 @@ body {
   content: "";
   width: 8px; height: 8px;
   border-radius: 50%;
-  background: rgba(0,0,0,0.35);
+  background: var(--swatch, var(--lv-0));
 }
 
 /* When level > 0, tint card background subtly */
@@ -826,9 +839,13 @@ body {
 .share-view__legend-item {
   display: flex; align-items: center; gap: 10px;
 }
+/* 白底+色環（不用 box-shadow，html2canvas 才能穩定渲染） */
 .share-view__legend-dot {
   width: 14px; height: 14px;
   border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--swatch, var(--lv-0));
+  box-sizing: border-box;
   flex-shrink: 0;
 }
 .share-view__foot {
@@ -971,6 +988,10 @@ body {
 .level-picker__swatch {
   width: 18px; height: 18px;
   border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--swatch, var(--lv-0));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--swatch, var(--lv-0)) 22%, transparent);
+  box-sizing: border-box;
   flex-shrink: 0;
 }
 .level-picker__close {
