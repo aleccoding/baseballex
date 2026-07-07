@@ -211,7 +211,9 @@ body {
 }
 .map-wrap {
   aspect-ratio: var(--map-aspect, 285 / 350);
-  max-width: var(--map-max-w, 460px);
+  /* 以高度為基準（560px），寬度依聯盟地圖比例放大：
+     台灣（直式）≈ 456px 寬、日本（橫式）≈ 655px 寬，不再被同一個寬度上限卡住 */
+  max-width: min(100%, calc(var(--map-max-h, 560px) * (var(--map-aspect, 285 / 350))));
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -261,8 +263,8 @@ body {
 }
 .map-side__count[data-zero="1"] { color: var(--ink-mute); opacity: 0.5; }
 
-@media (max-width: 800px) {
-  /* 手機：藏掉側邊面板，留地圖完整空間 */
+@media (max-width: 1024px) {
+  /* 窄螢幕：藏掉側邊面板，留地圖完整空間（加大後的日本地圖會與面板重疊） */
   .map-side { display: none; }
 }
 .map-placeholder {
