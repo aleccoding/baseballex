@@ -273,7 +273,7 @@ function renderHero() {
     const isActive = btn.dataset.league === state.activeLeague;
     btn.classList.toggle('is-active', isActive);
     btn.setAttribute('aria-selected', String(isActive));
-    btn.textContent = `⚾ ${loc(LEAGUES[btn.dataset.league], 'shortName')}`;
+    btn.textContent = `⚾️ ${loc(LEAGUES[btn.dataset.league], 'shortName')}`;
   });
 }
 
@@ -336,7 +336,7 @@ async function generateShareBlob() {
   if (cachedKey === key && cachedBlob) return cachedBlob;
 
   // 同步當前狀態到 share view
-  $('#share-title').textContent = `⚾ ${loc(league, 'fullTitle')}`;
+  $('#share-title').textContent = `⚾️ ${loc(league, 'fullTitle')}`;
   $('#share-subtitle').textContent = t('heroSubtitle', { season: loc(league, 'season'), n: league.stadiums.length });
   $('#share-score-num').textContent = String(getStateScore());
   $('#share-score-max').textContent = `/ ${getMaxScore()}`;

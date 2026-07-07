@@ -58,7 +58,7 @@ const UI = {
     // 「點亮」而非「進過」：L1 路過、L2 場外沒有進場，但都會讓地圖上的球亮起來
     statsLine: '點亮 {v} / {t} 座球場',
     heroSubtitle: '{season}・全 {n} 座一軍球場',
-    docTitle: '{title} {season} ⚾',
+    docTitle: '{title} {season} ⚾️',
     tabAriaLabel: '聯盟切換',
 
     mapTitle: '地圖',
@@ -96,7 +96,7 @@ const UI = {
     shareCopied: '✅ 已複製',
     shareCopyFailed: '複製失敗，可能瀏覽器不允許',
     shareHint: '部分平台無法直接帶圖，請先「複製圖片」或「下載 PNG」再貼到貼文。',
-    shareText: '我在{title}拿到 {score} / {max} 分，點亮 {visited} / {total} 座一軍球場！⚾',
+    shareText: '我在{title}拿到 {score} / {max} 分，點亮 {visited} / {total} 座一軍球場！⚾️',
     shareFoot: 'baseballex · 球場制霸 2026',
 
     close: '關閉',
@@ -114,7 +114,7 @@ const UI = {
     scoreLabel: '制覇レベル',
     statsLine: '{v} / {t} 球場をアンロック',
     heroSubtitle: '{season}・全{n}球場（一軍）',
-    docTitle: '{title} {season} ⚾',
+    docTitle: '{title} {season} ⚾️',
     tabAriaLabel: 'リーグ切替',
 
     mapTitle: '地図',
@@ -152,7 +152,7 @@ const UI = {
     shareCopied: '✅ コピーしました',
     shareCopyFailed: 'コピーできませんでした（ブラウザの制限の可能性）',
     shareHint: '一部のプラットフォームは画像を直接添付できません。先に「画像をコピー」または「PNG保存」してから投稿に貼り付けてください。',
-    shareText: '{title}で {score} / {max} 点、{visited} / {total} 球場をアンロック！⚾',
+    shareText: '{title}で {score} / {max} 点、{visited} / {total} 球場をアンロック！⚾️',
     shareFoot: 'baseballex・球場制覇 2026',
 
     close: '閉じる',
