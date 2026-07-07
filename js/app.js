@@ -190,7 +190,7 @@ function renderCards() {
     return `
       <li class="card-grid__region" data-region="${rg.id}">
         <button type="button" class="card-grid__region-toggle" aria-expanded="${!isCollapsed}">
-          <span class="card-grid__region-chevron" aria-hidden="true">▸</span>
+          <span class="card-grid__region-chevron" aria-hidden="true">►</span>
           <span class="card-grid__region-name">${loc(rg, 'name')}</span>
           <span class="card-grid__region-count" data-zero="${lit === 0 ? 1 : 0}">${lit} / ${items.length}</span>
         </button>
