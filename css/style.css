@@ -641,12 +641,6 @@ body {
   background: var(--chip-bg, #eee);
   color: var(--chip-fg, #333);
 }
-.team-chip--small {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  padding: 0;
-  background: var(--chip-bg);
-}
 
 /* Card meta row (capacity, year, note) */
 .card__meta {

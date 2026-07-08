@@ -90,14 +90,10 @@ function saveCurrentLeague() {
 }
 
 // ---------- Card / Map data helpers ----------
-function teamChip(teamId, { small = false } = {}) {
+function teamChip(teamId) {
   const team = getTeams()[teamId];
   if (!team) return '';
-  const name = loc(team, 'name');
-  if (small) {
-    return `<span class="team-chip team-chip--small" style="--chip-bg:${team.color}" title="${name}"></span>`;
-  }
-  return `<span class="team-chip" style="--chip-bg:${team.color}; --chip-fg:${team.textColor}">${name}</span>`;
+  return `<span class="team-chip" style="--chip-bg:${team.color}; --chip-fg:${team.textColor}">${loc(team, 'name')}</span>`;
 }
 
 function cardClasses(s) {
@@ -144,7 +140,7 @@ function renderCard(s) {
       ? `<span class="card__teams">${s.homeTeams.map((id) => teamChip(id)).join('')}</span>`
       : `<span class="card__teams">
            <span class="team-chip" style="--chip-bg:#eee; --chip-fg:#666">${t('chipSecondary')}</span>
-           ${(s.secondaryHomeTeams || []).map((id) => teamChip(id, { small: true })).join('')}
+           ${(s.secondaryHomeTeams || []).map((id) => teamChip(id)).join('')}
          </span>`;
 
   return `
