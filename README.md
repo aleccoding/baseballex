@@ -1,6 +1,6 @@
 # 棒球場制霸等級 ⚾
 
-> 🌐 **Demo**: https://aleccoding.github.io/baseballex/
+> 🌐 **Demo**: https://baseballex.aleccoding.com/
 
 紀錄你進過的中華職棒（CPBL）與日本職棒（NPB）一軍球場，產生分享圖到社群媒體。
 靈感來自 [日本制縣等級](https://zhung.com.tw/project/japanex/)。
