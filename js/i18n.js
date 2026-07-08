@@ -55,8 +55,8 @@ const UI = {
     langToggleLabel: '日本語',        // 顯示「可切換到的語言」
 
     scoreLabel: '制霸等級',
-    // 「點亮」而非「進過」：L1 路過、L2 場外沒有進場，但都會讓地圖上的球亮起來
-    statsLine: '點亮 {v} / {t} 座球場',
+    // 「解鎖」而非「進過」：L1 路過、L2 場外沒有進場，任何等級都算解鎖
+    statsLine: '解鎖 {v} / {t} 座球場',
     heroSubtitle: '{season}・全 {n} 座一軍球場',
     docTitle: '{title} {season} ⚾️',
     tabAriaLabel: '聯盟切換',
@@ -99,9 +99,9 @@ const UI = {
     shareCopied: '✅ 已複製',
     shareCopyFailed: '複製失敗，可能瀏覽器不允許',
     shareHint: '部分平台無法直接帶圖，請先「複製圖片」或「下載 PNG」再貼到貼文。',
-    shareText: '我在{title}拿到 {score} / {max} 分，點亮 {visited} / {total} 座一軍球場！⚾️ 你也來試試：{url}',
-    shareStatsLine: '點亮 {v} / {t} 座球場・還有 {r} 座待點亮',
-    shareCta: '你也來點亮你的球場地圖 ⚾️ {url}',
+    shareText: '我在{title}拿到 {score} / {max} 分，解鎖 {visited} / {total} 座一軍球場！⚾️ 你也來試試：{url}',
+    shareStatsLine: '解鎖 {v} / {t} 座球場・還有 {r} 座待解鎖',
+    shareCta: '你也來解鎖你的球場地圖 ⚾️ {url}',
 
     close: '關閉',
     footerAbout: '關於',
@@ -161,7 +161,7 @@ const UI = {
     shareHint: '一部のプラットフォームは画像を直接添付できません。先に「画像をコピー」または「PNG保存」してから投稿に貼り付けてください。',
     shareText: '{title}で {score} / {max} 点、{visited} / {total} 球場をアンロック！⚾️ あなたも→ {url}',
     shareStatsLine: '{v} / {t} 球場をアンロック・残り {r} 球場',
-    shareCta: 'あなたも球場マップを点けてみよう ⚾️ {url}',
+    shareCta: 'あなたも球場マップをアンロックしよう ⚾️ {url}',
 
     close: '閉じる',
     footerAbout: 'このツールについて',
