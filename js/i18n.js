@@ -86,6 +86,7 @@ const UI = {
 
     pickerTitle: '選擇等級',
     pickerCancel: '取消',
+    chooserTitle: '這裡有 {n} 座球場',
 
     shareModalTitle: '分享你的成績',
     sharePreviewAlt: '分享圖預覽',
@@ -146,6 +147,7 @@ const UI = {
 
     pickerTitle: 'レベルを選択',
     pickerCancel: 'キャンセル',
+    chooserTitle: 'ここに {n} 球場あります',
 
     shareModalTitle: '成績をシェア',
     sharePreviewAlt: 'シェア画像プレビュー',

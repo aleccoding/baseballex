@@ -1074,6 +1074,15 @@ body {
   font-weight: 700;
   box-shadow: inset 0 0 0 2px var(--accent);
 }
+/* 重疊球場選單裡的所在地小字 */
+.stadium-chooser__loc {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  color: var(--ink-mute);
+  margin-top: 1px;
+}
+
 .level-picker__swatch {
   width: 18px; height: 18px;
   border-radius: 50%;

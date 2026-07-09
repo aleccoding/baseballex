@@ -301,6 +301,13 @@
     <button type="button" class="btn btn--ghost share-modal__close" id="share-modal-close" data-i18n="close">關閉</button>
   </dialog>
 
+  <!-- 重疊球場選擇器 modal（點到多顆重疊的球時先選球場） -->
+  <dialog class="level-picker" id="stadium-chooser" aria-label="選擇球場">
+    <h3 class="level-picker__title" id="stadium-chooser-title">這裡有幾座球場</h3>
+    <ul class="level-picker__list" id="stadium-chooser-list"></ul>
+    <button type="button" class="btn btn--ghost level-picker__close" id="stadium-chooser-close" data-i18n="pickerCancel">取消</button>
+  </dialog>
+
   <!-- 等級選擇器 modal -->
   <dialog class="level-picker" id="level-picker" aria-label="選擇等級">
     <h3 class="level-picker__title" id="level-picker-title" data-i18n="pickerTitle">選擇等級</h3>

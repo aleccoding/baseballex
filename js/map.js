@@ -40,13 +40,14 @@ function getRegions(outline) {
 // G2 視覺：球永遠是白色棒球，等級用「色環 + 外圈光暈」表現
 // 色環走 CSS 變數（--pin-ring / --pin-ring-w），光暈是兩層半透明 SVG 圓
 // （html2canvas 畫不出 CSS glow，純 SVG 圓在分享圖也能完整渲染）
-const PIN_RING_L0 = '#1a1d24';
+// L0 外框用中灰而非近黑：手機小地圖上 20 顆深框白球會讀成黑點陣
+const PIN_RING_L0 = '#7c828d';
 
 function pinRingColor(levelId) {
   return levelId === DEFAULT_LEVEL ? PIN_RING_L0 : LEVELS[levelId].color;
 }
 function pinRingWidth(levelId) {
-  return levelId === DEFAULT_LEVEL ? '1.6' : '2.4';
+  return levelId === DEFAULT_LEVEL ? '1.3' : '2.4';
 }
 function pinGlowFill(levelId) {
   return levelId === DEFAULT_LEVEL ? 'none' : LEVELS[levelId].color;

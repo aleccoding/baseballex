@@ -683,13 +683,60 @@ function switchLocale(l) {
   renderAll();
 }
 
-// 地圖 pin 點擊 → 開等級選擇器（每次 renderMap 後須重新綁，因為 SVG 被換掉了）
+// ---------- 地圖點擊：手指半徑判定 + 重疊球場消歧義 ----------
+// 球的螢幕尺寸固定 13px 左右，低於觸控標準（44px）；且東京巨蛋/神宮這類
+// 相距數公里的球場在任何縮放下都會重疊。因此：
+//   點擊半徑內只有一顆 → 直接開等級選擇器
+//   有多顆 → 先開球場選單讓使用者選
+const TAP_RADIUS_TOUCH = 26;   // px，約半指寬
+const TAP_RADIUS_MOUSE = 14;
+
+function findPinsNear(stack, clientX, clientY) {
+  const radius = window.matchMedia('(pointer: coarse)').matches ? TAP_RADIUS_TOUCH : TAP_RADIUS_MOUSE;
+  const hits = [];
+  stack.querySelectorAll('.tw-map__pin[data-id]').forEach((pin) => {
+    const r = pin.getBoundingClientRect();
+    const d = Math.hypot(clientX - (r.left + r.width / 2), clientY - (r.top + r.height / 2));
+    if (d <= radius) hits.push({ id: pin.dataset.id, d });
+  });
+  return hits.sort((a, b) => a.d - b.d).map((h) => h.id);
+}
+
+function openStadiumChooser(ids) {
+  const stadiums = getStadiums();
+  const levels = getLevels();
+  $('#stadium-chooser-title').textContent = t('chooserTitle', { n: ids.length });
+  $('#stadium-chooser-list').innerHTML = ids.map((id) => {
+    const s = stadiums.find((x) => x.id === id);
+    if (!s) return '';
+    const lv = LEVELS[levels[id] ?? DEFAULT_LEVEL];
+    return `
+      <li class="level-picker__item">
+        <button type="button" data-stadium="${id}">
+          <span class="level-picker__swatch" style="--swatch:${lv.color}"></span>
+          <span class="level-picker__text">${loc(s, 'name')}
+            <small class="stadium-chooser__loc">${locationText(s)}</small>
+          </span>
+        </button>
+      </li>
+    `;
+  }).join('');
+  $('#stadium-chooser').showModal();
+}
+
+// 每次 renderMap 後須重新綁，因為 SVG 被換掉了
 function bindMapPinClicks() {
   const stack = document.querySelector('.tw-map-stack');
   if (!stack) return;
+  // 拖曳防護：pointerdown 到 click 之間移動超過 8px 視為拖地圖，不觸發點擊
+  let downAt = null;
+  stack.addEventListener('pointerdown', (e) => { downAt = { x: e.clientX, y: e.clientY }; });
   stack.addEventListener('click', (e) => {
-    const pin = e.target.closest('.tw-map__pin[data-id]');
-    if (pin) openLevelPicker(pin.dataset.id);
+    if (e.target.closest('.tw-ctrl')) return;   // 縮放按鈕不參與
+    if (downAt && Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) > 8) return;
+    const ids = findPinsNear(stack, e.clientX, e.clientY);
+    if (ids.length === 1) openLevelPicker(ids[0]);
+    else if (ids.length > 1) openStadiumChooser(ids);
   });
 }
 
@@ -718,6 +765,18 @@ function bindEvents() {
   $('#level-picker-close').addEventListener('click', closeLevelPicker);
   $('#level-picker').addEventListener('click', (e) => {
     if (e.target === $('#level-picker')) closeLevelPicker();
+  });
+
+  // 重疊球場選單：選球場 → 開等級選擇器
+  $('#stadium-chooser-list').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-stadium]');
+    if (!btn) return;
+    $('#stadium-chooser').close();
+    openLevelPicker(btn.dataset.stadium);
+  });
+  $('#stadium-chooser-close').addEventListener('click', () => $('#stadium-chooser').close());
+  $('#stadium-chooser').addEventListener('click', (e) => {
+    if (e.target === $('#stadium-chooser')) $('#stadium-chooser').close();
   });
 
   // 工具列
