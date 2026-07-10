@@ -16,4 +16,4 @@ export const AUTHOR = {
 
 // GoatCounter 代碼（如 'baseballex' → https://baseballex.goatcounter.com）
 // 留空 = 完全不載入統計腳本
-export const GOATCOUNTER_CODE = '';
+export const GOATCOUNTER_CODE = 'baseballex';
