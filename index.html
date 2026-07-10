@@ -10,13 +10,14 @@
   <!-- Content Security Policy（深度防禦：限制資源只能從本站載入） -->
   <!-- style-src 含 'unsafe-inline' 因為大量元素用 inline style 套色（球團色、等級色等） -->
   <!-- img-src 含 data: 給 SVG favicon、blob: 給分享圖預覽 -->
+  <!-- gc.zgo.at / goatcounter.com 為無 cookie 匿名統計（GoatCounter） -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self';
+    script-src 'self' https://gc.zgo.at;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' data: blob:;
+    img-src 'self' data: blob: https://*.goatcounter.com;
     font-src 'self';
-    connect-src 'self';
+    connect-src 'self' https://*.goatcounter.com;
     base-uri 'none';
     form-action 'self';
   " />
@@ -105,8 +106,7 @@
       <button type="button" class="link-btn" id="open-about" data-i18n="footerAbout">關於</button>
       <span class="footer-nav__sep">・</span>
       <button type="button" class="link-btn" id="open-privacy" data-i18n="footerPrivacy">隱私說明</button>
-      <span class="footer-nav__sep">・</span>
-      <a class="link-btn" href="https://github.com/aleccoding/baseballex" target="_blank" rel="noopener">GitHub</a>
+      <!-- 作者連結由 js/config.js 的 AUTHOR.links 動態渲染 -->
     </nav>
 
   </main>
@@ -271,6 +271,7 @@
       <div class="share-view__map" id="share-map"></div>
       <div class="share-view__legend" id="share-legend"></div>
       <footer class="share-view__foot" id="share-foot">你也來解鎖你的球場地圖 ⚾️</footer>
+      <div class="share-view__byline" id="share-byline"></div>
     </div>
   </div>
 

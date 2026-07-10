@@ -2,6 +2,7 @@ import { LEVELS, DEFAULT_LEVEL } from '../data/levels.js';
 import { LEAGUES, DEFAULT_LEAGUE } from '../data/leagues.js';
 import { renderMap, renderMapStatic, updateMapPin, reorderMapPins } from './map.js';
 import { t, loc, getLocale, setLocale } from './i18n.js';
+import { AUTHOR, GOATCOUNTER_CODE } from './config.js';
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -521,6 +522,7 @@ async function downloadShareImage(btn = $('#btn-share')) {
   const original = btn.textContent;
   btn.disabled = true;
   btn.textContent = t('generating');
+  track('share-download');
   try {
     const blob = await generateShareBlob();
     const url = URL.createObjectURL(blob);
@@ -547,6 +549,7 @@ async function openSocialShare() {
   const original = btn.textContent;
   btn.disabled = true;
   btn.textContent = t('generating');
+  track('share-social');
   try {
     const blob = await generateShareBlob();
     const text = buildShareText();
@@ -672,6 +675,7 @@ function switchLeague(leagueId) {
   state.activeLeague = leagueId;
   invalidateShareCache();
   renderAll();
+  track(`league-${leagueId}`);
 }
 
 // ---------- Locale switching ----------
@@ -680,7 +684,9 @@ function switchLocale(l) {
   setLocale(l);
   invalidateShareCache();
   applyStaticText();
+  renderAuthorLinks();   // About 簽名的「製作/制作」隨語系重繪
   renderAll();
+  track(`locale-${l}`);
 }
 
 // ---------- 地圖點擊：手指半徑判定 + 重疊球場消歧義 ----------
@@ -817,9 +823,66 @@ function bindEvents() {
   });
 }
 
+// ---------- 作者導流連結（頁尾 / About / 分享圖 byline，來源：config.js） ----------
+function renderAuthorLinks() {
+  const anchor = (l) => `<a class="link-btn" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`;
+  // 頁尾：關於・隱私 之後接上 config 的連結
+  const nav = document.querySelector('.footer-nav');
+  nav.querySelectorAll('[data-author-link]').forEach((el) => el.remove());
+  AUTHOR.links.forEach((l) => {
+    const sep = document.createElement('span');
+    sep.className = 'footer-nav__sep';
+    sep.dataset.authorLink = '1';
+    sep.textContent = '・';
+    const a = document.createElement('span');
+    a.dataset.authorLink = '1';
+    a.innerHTML = anchor(l);
+    nav.appendChild(sep);
+    nav.appendChild(a);
+  });
+
+  // About modal 簽名：Alec 連到第一個連結，其餘列在後面
+  const primary = AUTHOR.links[0];
+  const rest = AUTHOR.links.slice(1);
+  document.querySelectorAll('#about-modal .info-modal__sign').forEach((el) => {
+    const label = el.textContent.includes('制作') ? '制作' : '製作';
+    el.innerHTML = `${label}：` +
+      (primary ? `<a href="${primary.url}" target="_blank" rel="noopener">${AUTHOR.name}</a>` : AUTHOR.name) +
+      (rest.length ? `（${rest.map((l) => `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join('・')}）` : '') +
+      ' ・ 2026';
+  });
+
+  // 分享圖 byline
+  const byline = $('#share-byline');
+  if (byline) {
+    byline.textContent = AUTHOR.handle
+      ? `made by ${AUTHOR.handle}`
+      : `made by ${AUTHOR.name} · ${(primary?.url || '').replace(/^https?:\/\//, '')}`;
+  }
+}
+
+// ---------- 流量統計（GoatCounter：無 cookie、匿名彙總；未設定代碼則完全不載入） ----------
+function setupAnalytics() {
+  if (!GOATCOUNTER_CODE) return;
+  const s = document.createElement('script');
+  s.async = true;
+  s.dataset.goatcounter = `https://${GOATCOUNTER_CODE}.goatcounter.com/count`;
+  s.src = 'https://gc.zgo.at/count.js';
+  document.head.appendChild(s);
+}
+
+// 自訂事件（分享轉換率、聯盟/語系偏好）；未載入統計時靜默略過
+function track(name) {
+  try {
+    window.goatcounter?.count?.({ path: name, event: true });
+  } catch { /* ignore */ }
+}
+
 // ---------- Init ----------
 loadState();
 loadCollapsed();
 applyStaticText();   // 依語系套用靜態文字（初次進站依 navigator.language 自動偵測）
 bindEvents();
+renderAuthorLinks();
+setupAnalytics();
 renderAll();

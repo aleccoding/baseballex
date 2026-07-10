@@ -920,6 +920,15 @@ body {
   box-sizing: border-box;
   flex-shrink: 0;
 }
+/* 分享圖 byline（作者署名，淡灰小字） */
+.share-view__byline {
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-mute);
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
 .share-view__foot {
   text-align: center;
   font-size: 16px;
